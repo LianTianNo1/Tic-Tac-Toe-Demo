@@ -62,18 +62,50 @@ function Board({ xIsNext, squares, onPlay }) {
 
 // Game组件
 export default function Game() {
-  // useState hook 定义xIsNext和history状态
-  const [xIsNext, setXIsNext] = useState(true);
+  // useState hook 定义history和currentMove状态
   const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
 
-  // 获取当前棋盘状态
-  const currentSquares = history[history.length - 1];
+  // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
+  const currentSquares = history[currentMove];
+
+  /**
+   * 如果 currentMove 是偶数,则 xIsNext 为 true。
+   * 如果 currentMove 是奇数,则 xIsNext 为 false。
+   * 所以通过这个简单的计算,我们可以清楚地知道在任何一步,该谁下棋(X或O)。
+   */
+  const xIsNext = currentMove % 2 === 0;
 
   // 点击棋盘时的回调,更新history和xIsNext
   function handlePlay(nextSquares) {
-    setHistory([...history, nextSquares]);
-    setXIsNext(!xIsNext);
+    // 获取从history中前currentMove+1步的子数组,并拼接上nextSquares
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    // 更新history和currentMove
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
   }
+
+  // 跳转到history中的某一步
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  // 渲染历史记录列表
+  const moves = history.map((squares, move) => {
+    let description;
+    // 如果不是第一步,显示跳转文字
+    if (move > 0) {
+      description = "Go to move #" + move;
+    } else {
+      description = "Go to game start";
+    }
+    // 返回历史记录按钮
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
 
   // 返回游戏组件
   return (
@@ -83,7 +115,8 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{/*TODO*/}</ol> {/* 显示历史记录*/}
+        {/* 显示历史记录*/}
+        <ol>{moves}</ol>
       </div>
     </div>
   );
