@@ -93,8 +93,11 @@ export default function Game() {
   // 渲染历史记录列表
   const moves = history.map((squares, move) => {
     let description;
-    // 如果不是第一步,显示跳转文字
-    if (move > 0) {
+    // 仅对于当前移动，显示“您正在移动#...”而不是按钮
+    if (move === currentMove) {
+      description = `You are at move #${move}`;
+    } else if (move > 0) {
+      // 如果不是第一步,显示跳转文字
       description = "Go to move #" + move;
     } else {
       description = "Go to game start";
@@ -102,7 +105,12 @@ export default function Game() {
     // 返回历史记录按钮
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        {/* 仅对于当前移动，显示“您正在移动#...”而不是按钮 */}
+        {move === currentMove ? (
+          description
+        ) : (
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        )}
       </li>
     );
   });
