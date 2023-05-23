@@ -10,11 +10,7 @@ function Square({ value, onSquareClick }) {
 }
 
 // 定义棋盘Board组件
-export default function Board() {
-  // useState hook 定义xIsNext和squares状态
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
-
+function Board({ xIsNext, squares, onPlay }) {
   // 计算赢家
   const winner = calculateWinner(squares);
   let status;
@@ -26,20 +22,19 @@ export default function Board() {
 
   // 点击棋盘时的回调
   function handleClick(i) {
-    const nextSquares = squares.slice();
     // 如果有赢家或者已经下过了,就返回
     if (squares[i] || calculateWinner(squares)) {
       return;
     }
+    const nextSquares = squares.slice();
     // 根据xIsNext判断该下X棋还是O棋
     if (xIsNext) {
       nextSquares[i] = "X";
     } else {
       nextSquares[i] = "O";
     }
-    //更新squares和xIsNext状态
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    // 调用上层Game组件传递的onPlay方法
+    onPlay(nextSquares);
   }
 
   // 返回棋盘组件
@@ -62,6 +57,35 @@ export default function Board() {
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
     </Fragment>
+  );
+}
+
+// Game组件
+export default function Game() {
+  // useState hook 定义xIsNext和history状态
+  const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+
+  // 获取当前棋盘状态
+  const currentSquares = history[history.length - 1];
+
+  // 点击棋盘时的回调,更新history和xIsNext
+  function handlePlay(nextSquares) {
+    setHistory([...history, nextSquares]);
+    setXIsNext(!xIsNext);
+  }
+
+  // 返回游戏组件
+  return (
+    <div className="game">
+      <div className="game-board">
+        {/* 将状态传入Board组件 */}
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol> {/* 显示历史记录*/}
+      </div>
+    </div>
   );
 }
 
