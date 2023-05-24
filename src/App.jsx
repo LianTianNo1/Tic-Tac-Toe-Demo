@@ -43,13 +43,14 @@ function Board({ xIsNext, squares, onPlay }) {
       _,
       i // 生成3行
     ) => (
-      <div className="board-row">
+      <div key={i} className="board-row">
         {Array.from({ length: 3 }).map(
           (
             _,
             j // 每行3列
           ) => (
             <Square
+              key={i * 3 + j}
               value={squares[i * 3 + j]}
               onSquareClick={() => handleClick(i * 3 + j)}
             />
@@ -73,7 +74,8 @@ export default function Game() {
   // useState hook 定义history和currentMove状态
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-
+  // 添加排序标志
+  const [isAscending, setIsAscending] = useState(true);
   // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
   const currentSquares = history[currentMove];
 
@@ -123,6 +125,16 @@ export default function Game() {
     );
   });
 
+  // 根据isAscending排序moves
+  // a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数
+  const sortedMoves = isAscending
+    ? moves.slice().sort((a, b) => a.key - b.key)
+    : moves.slice().sort((a, b) => b.key - a.key);
+
+  function toggleSortOrder() {
+    setIsAscending(!isAscending);
+  }
+
   // 返回游戏组件
   return (
     <div className="game">
@@ -131,8 +143,12 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        {/* 显示历史记录*/}
-        <ol>{moves}</ol>
+        {/* 添加排序按钮 */}
+        <button onClick={toggleSortOrder}>
+          {isAscending ? "正序" : "倒序"}
+        </button>
+        {/* 显示排序历史记录*/}
+        <ol>{sortedMoves}</ol>
       </div>
     </div>
   );
