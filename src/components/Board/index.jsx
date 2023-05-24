@@ -3,9 +3,15 @@ import Square from "../Square";
 import { calculateWinner } from "../../utils/index";
 
 /** 定义棋盘Board组件 */
-export default function Board({ xIsNext, squares, onPlay }) {
+export default function Board({
+  boardSize,
+  winLength,
+  xIsNext,
+  squares,
+  onPlay,
+}) {
   // 计算赢家
-  const winnerData = calculateWinner(squares);
+  const winnerData = calculateWinner(squares, { boardSize, winLength });
   const winner = winnerData && winnerData.winner;
   const line = winnerData && winnerData.line;
   let status;
@@ -22,7 +28,7 @@ export default function Board({ xIsNext, squares, onPlay }) {
   // 点击棋盘时的回调
   function handleClick(i) {
     // 如果有赢家或者已经下过了,就返回
-    if (squares[i] || calculateWinner(squares)) {
+    if (squares[i] || calculateWinner(squares, { boardSize, winLength })) {
       return;
     }
     const nextSquares = squares.slice();
@@ -37,22 +43,22 @@ export default function Board({ xIsNext, squares, onPlay }) {
   }
 
   // 使用两个循环生成棋盘格子
-  const board = Array.from({ length: 3 }).map(
+  const board = Array.from({ length: boardSize }).map(
     (
       _,
-      i // 生成3行
+      i // 生成boardSize行
     ) => (
       <div key={i} className="board-row">
-        {Array.from({ length: 3 }).map(
+        {Array.from({ length: boardSize }).map(
           (
             _,
-            j // 每行3列
+            j // 每行boardSize列
           ) => (
             <Square
-              key={i * 3 + j}
-              value={squares[i * 3 + j]}
-              onSquareClick={() => handleClick(i * 3 + j)}
-              highlight={line && line.includes(i * 3 + j)} // 高亮square
+              key={i * boardSize + j}
+              value={squares[i * boardSize + j]}
+              onSquareClick={() => handleClick(i * boardSize + j)}
+              highlight={line && line.includes(i * boardSize + j)} // 高亮square
             />
           )
         )}

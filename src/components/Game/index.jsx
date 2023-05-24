@@ -4,9 +4,23 @@ import { calculateRowCol } from "../../utils/index";
 
 /** Game组件 */
 export default function Game() {
+  const [boardSize, setBoardSize] = useState(6); // 棋盘大小
+  const [winLength, setWinLength] = useState(3); // 连线长度
   // useState hook 定义history和currentMove状态
-  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [history, setHistory] = useState([
+    Array(boardSize * boardSize).fill(null),
+  ]);
   const [currentMove, setCurrentMove] = useState(0);
+
+  function handleBoardSizeChange(e) {
+    const size = e.target.value;
+    setBoardSize(size);
+    // 重置历史
+    setHistory([Array(size * size).fill(null)]);
+    // 重置currentMove
+    setCurrentMove(0);
+  }
+
   // 添加排序标志
   const [isAscending, setIsAscending] = useState(true);
   // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
@@ -41,7 +55,11 @@ export default function Game() {
       description = `您正在移动第${move}步`;
     } else if (move > 0) {
       // 如果不是第一步,显示跳转文字和行列号
-      const rowCol = calculateRowCol(history[move - 1], history[move]);
+      const rowCol = calculateRowCol(
+        history[move - 1],
+        history[move],
+        boardSize
+      );
       description = `跳转到第${move}步, 当前坐标 (${rowCol})`;
     } else {
       description = "进入游戏开始";
@@ -72,9 +90,39 @@ export default function Game() {
   // 返回游戏组件
   return (
     <div className="game">
+      <div className="game-setting">
+        {/* 添加输入框设置棋盘大小和连线长度 */}
+        <label htmlFor="boardSize">
+          棋盘大小：{`${boardSize}x${boardSize}`}
+          <input
+            id="boardSize"
+            value={boardSize}
+            type="number"
+            onChange={handleBoardSizeChange}
+          />
+        </label>
+        <label htmlFor="boardSize">
+          连线长度：
+          <input
+            type="number"
+            value={winLength}
+            onChange={(e) => {
+              const len = e.target.value;
+              if (len > boardSize) return console.error("超过范围");
+              setWinLength(e.target.value);
+            }}
+          />
+        </label>
+      </div>
+
       <div className="game-board">
-        {/* 将状态传入Board组件 */}
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board
+          boardSize={boardSize}
+          winLength={winLength}
+          xIsNext={xIsNext}
+          squares={currentSquares}
+          onPlay={handlePlay}
+        />
       </div>
       <div className="game-info">
         {/* 添加排序按钮 */}

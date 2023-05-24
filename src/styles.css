@@ -93,3 +93,9 @@ body {
   color: white;
   background: gold;
 }
+
+.game-setting {
+  display: flex;
+  width: 200px;
+  flex-wrap: wrap;
+}
