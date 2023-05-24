@@ -1,9 +1,12 @@
 import React, { Fragment, useState } from "react";
 
 // 定义棋子Square组件
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, highlight }) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button
+      className={`square ${highlight ? "highlight" : ""}`}
+      onClick={onSquareClick}
+    >
       {value}
     </button>
   );
@@ -12,10 +15,16 @@ function Square({ value, onSquareClick }) {
 // 定义棋盘Board组件
 function Board({ xIsNext, squares, onPlay }) {
   // 计算赢家
-  const winner = calculateWinner(squares);
+  const winnerData = calculateWinner(squares);
+  const winner = winnerData && winnerData.winner;
+  const line = winnerData && winnerData.line;
   let status;
+
   if (winner) {
     status = "Winner: " + winner;
+  } else if (Array.from(squares).every((sq) => sq != null)) {
+    // 如果棋盘上所有格子都不为空
+    status = "平局";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -53,6 +62,7 @@ function Board({ xIsNext, squares, onPlay }) {
               key={i * 3 + j}
               value={squares[i * 3 + j]}
               onSquareClick={() => handleClick(i * 3 + j)}
+              highlight={line && line.includes(i * 3 + j)} // 高亮square
             />
           )
         )}
@@ -101,7 +111,7 @@ export default function Game() {
   }
 
   // 渲染历史记录列表
-  const moves = history.map((squares, move) => {
+  const moves = history.map((_, move) => {
     let description;
     // 仅对于当前移动，显示“您正在移动#...”而不是按钮
     if (move === currentMove) {
@@ -167,13 +177,18 @@ function calculateWinner(squares) {
     [0, 4, 8], // 主对角线
     [2, 4, 6], // 次对角线
   ];
+
   // 遍历所有可能线
   for (let i = 0; i < lines.length; i++) {
     // 获取当前线上的坐标
     const [a, b, c] = lines[i];
     // 如果这三个坐标上的棋子都一样,并且都不为空,那么就返回这个棋子
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      // 返回赢家的棋子,也返回赢家线上的三个坐标
+      return {
+        winner: squares[a],
+        line: [a, b, c],
+      };
     }
   }
   // 如果没有赢家,返回null
