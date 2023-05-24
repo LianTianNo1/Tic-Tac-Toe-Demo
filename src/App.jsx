@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 
-// 定义棋子Square组件
+/** 定义棋子Square组件 */
 function Square({ value, onSquareClick, highlight }) {
   return (
     <button
@@ -12,7 +12,7 @@ function Square({ value, onSquareClick, highlight }) {
   );
 }
 
-// 定义棋盘Board组件
+/** 定义棋盘Board组件 */
 function Board({ xIsNext, squares, onPlay }) {
   // 计算赢家
   const winnerData = calculateWinner(squares);
@@ -79,7 +79,7 @@ function Board({ xIsNext, squares, onPlay }) {
   );
 }
 
-// Game组件
+/** Game组件 */
 export default function Game() {
   // useState hook 定义history和currentMove状态
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -117,8 +117,9 @@ export default function Game() {
     if (move === currentMove) {
       description = `You are at move #${move}`;
     } else if (move > 0) {
-      // 如果不是第一步,显示跳转文字
-      description = "Go to move #" + move;
+      // 如果不是第一步,显示跳转文字和行列号
+      const rowCol = calculateRowCol(history[move - 1], history[move]);
+      description = `Go to move #${move} (${rowCol})`;
     } else {
       description = "Go to game start";
     }
@@ -164,7 +165,7 @@ export default function Game() {
   );
 }
 
-// 计算赢家的函数
+/** 计算赢家的函数 */
 function calculateWinner(squares) {
   // 组成赢家的所有可能线
   const lines = [
@@ -193,4 +194,22 @@ function calculateWinner(squares) {
   }
   // 如果没有赢家,返回null
   return null;
+}
+
+/**
+ * 计算行列号的函数
+ * 变化坐标是在preSquares状态变化到nextSquares状态的过程中产生的
+ */
+function calculateRowCol(preSquares, nextSquares) {
+  // 对preSquares遍历可以确保遍历到的每个坐标,都代表了preSquares状态下的棋子情况。
+  for (let i = 0; i < preSquares.length; i++) {
+    // 然后再和nextSquares中对应的坐标进行对比,就可以找出变化的坐标
+    if (preSquares[i] !== nextSquares[i]) {
+      // 计算行号
+      const row = Math.floor(i / 3) + 1;
+      // 计算列号
+      const col = (i % 3) + 1;
+      return `${row}, ${col}`;
+    }
+  }
 }
