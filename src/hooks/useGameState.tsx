@@ -94,8 +94,7 @@ export default function useGameState () {
         });
     }, [history, currentMove]);
 
-    // 根据isAscending排序moves
-    // a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数
+    // 根据isAscending排序moves,a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数
     const sortedMoves = useMemo(() => {
         return isAscending
             ? moves

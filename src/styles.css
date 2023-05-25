@@ -125,10 +125,19 @@ body {
 .highlight {
     color: white;
     background: #f06966;
-    transform: scale(1.2);
     z-index: 9;
     position: relative;
     border: none;
+    animation: ani-highlight .5s 2 forwards;
+}
+
+@keyframes ani-highlight {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1.2);
+    }
 }
 
 .game-setting {
