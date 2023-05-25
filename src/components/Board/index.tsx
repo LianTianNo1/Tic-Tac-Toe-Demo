@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Square } from "components";
 import { blockFun, calculateWinner } from "utils";
 
@@ -15,65 +15,87 @@ interface BoardProps {
   onPlay: (squares: string[]) => void;
 }
 
+interface BoardState {
+  winner: string;
+  line: number[];
+}
+
 /** 定义棋盘Board组件 */
 export default function Board(props: BoardProps) {
   const { boardSize, winLength, xIsNext, squares, onPlay = blockFun } = props;
 
-  // 计算赢家
-  const winnerData = calculateWinner(squares, { boardSize, winLength });
-  const winner = winnerData && winnerData.winner;
-  const line = winnerData && winnerData.line;
-  let status;
+  // 赢家
+  const [winner, setWinner] = useState<BoardState["winner"]>("");
+  // 高亮线段
+  const [line, setLine] = useState<BoardState["line"]>([]);
 
-  if (winner) {
-    status = "胜利者: " + winner;
-  } else if (Array.from(squares).every((sq) => sq != null)) {
-    // 如果棋盘上所有格子都不为空
-    status = "平局";
-  } else {
-    status = "下一个回合: " + (xIsNext ? "X" : "O");
-  }
+  // 计算赢家
+  useEffect(() => {
+    const winnerData: BoardState = calculateWinner(squares, {
+      boardSize,
+      winLength,
+    }) as BoardState;
+    setWinner(winnerData && winnerData.winner);
+    setLine(winnerData && winnerData.line);
+  }, [squares, boardSize, winLength]);
+
+  const status = useMemo(() => {
+    if (winner) {
+      return "胜利者: " + winner;
+    } else if (Array.from(squares).every((sq) => sq != null)) {
+      return "平局";
+    } else {
+      return "下一个回合: " + (xIsNext ? "X" : "O");
+    }
+  }, [winner, squares]);
 
   // 点击棋盘时的回调
-  function handleClick(i: number) {
-    // 如果有赢家或者已经下过了,就返回
-    if (squares[i] || calculateWinner(squares, { boardSize, winLength })) {
-      return;
-    }
-    const nextSquares = squares.slice();
-    // 根据xIsNext判断该下X棋还是O棋
-    if (xIsNext) {
-      nextSquares[i] = "X";
-    } else {
-      nextSquares[i] = "O";
-    }
-    // 调用上层Game组件传递的onPlay方法
-    onPlay(nextSquares);
-  }
+  const handleClick = useCallback(
+    (i: number) => {
+      // 如果有赢家或者已经下过了,就返回
+      if (squares[i] || calculateWinner(squares, { boardSize, winLength })) {
+        return;
+      }
+      const nextSquares = squares.slice();
+      // 根据xIsNext判断该下X棋还是O棋
+      if (xIsNext) {
+        nextSquares[i] = "X";
+      } else {
+        nextSquares[i] = "O";
+      }
+      // 调用上层Game组件传递的onPlay方法
+      onPlay(nextSquares);
+    },
+    [squares]
+  );
 
   // 使用两个循环生成棋盘格子
-  const board = Array.from({ length: boardSize }).map(
-    (
-      _,
-      i // 生成boardSize行
-    ) => (
-      <div key={i} className="board-row">
-        {Array.from({ length: boardSize }).map(
-          (
-            _,
-            j // 每行boardSize列
-          ) => (
-            <Square
-              key={i * boardSize + j}
-              value={squares[i * boardSize + j]}
-              onSquareClick={() => handleClick(i * boardSize + j)}
-              highlight={(line && line.includes(i * boardSize + j)) as boolean} // 高亮square
-            />
-          )
-        )}
-      </div>
-    )
-  );
+  const board = useMemo(() => {
+    return Array.from({ length: boardSize }).map(
+      (
+        _,
+        i // 生成boardSize行
+      ) => (
+        <div key={i} className="board-row">
+          {Array.from({ length: boardSize }).map(
+            (
+              _,
+              j // 每行boardSize列
+            ) => (
+              <Square
+                key={i * boardSize + j}
+                value={squares[i * boardSize + j]}
+                onSquareClick={() => handleClick(i * boardSize + j)}
+                highlight={
+                  (line && line.includes(i * boardSize + j)) as boolean
+                } // 高亮square
+              />
+            )
+          )}
+        </div>
+      )
+    );
+  }, [squares, line, boardSize]);
 
   // 返回棋盘组件
   return (
