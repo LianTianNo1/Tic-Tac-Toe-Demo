@@ -100,10 +100,10 @@ export default function useGameState () {
         return isAscending
             ? moves
                 .slice()
-                .sort((pre, cur) => (pre.key as number) - (cur.key as number))
+                .sort((pre, cur) => Number(pre.key) - Number(cur.key))
             : moves
                 .slice()
-                .sort((pre, cur) => (pre.key as number) - (cur.key as number));
+                .sort((pre, cur) => Number(cur.key) - Number(pre.key));
     }, [isAscending, moves]);
 
     // 切换排序

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { blockFun, calculateWinner } from 'utils';
-import { Square } from 'components';
+import { BoardContent } from 'components';
 
 export interface BoardProps {
     /** 棋盘大小 */
@@ -81,37 +81,18 @@ export default function useBoard (props: BoardProps) {
         [squares]
     );
 
-    // 使用两个循环生成棋盘格子
-    const board = useMemo(() => {
-        return Array.from({ length: boardSize }).map((
-            _record,
-            index // 生成boardSize行
-        ) => (
-            <div key={index} className="board-row">
-                {Array.from({ length: boardSize }).map((
-                    _record2,
-                    jIndex // 每行boardSize列
-                ) => (
-                    <Square
-                        key={(index * boardSize) + jIndex}
-                        value={squares[(index * boardSize) + jIndex]}
-                        onSquareClick={() =>
-                            handleSquareClick((index * boardSize) + jIndex)
-                        }
-                        highlight={
-                            (highlightedLine && highlightedLine.includes((index * boardSize) + jIndex)) as boolean
-                        } // 高亮square
-                    />
-                ))}
-            </div>
-        ));
-    }, [squares, highlightedLine, boardSize]);
-
     return {
         winner,
         status,
-        board,
         highlightedLine,
+        board: (
+            <BoardContent
+                boardSize={boardSize}
+                squares={squares}
+                highlightedLine={highlightedLine}
+                onSquareClick={handleSquareClick}
+            />
+        ),
         handleSquareClick,
     };
 }
