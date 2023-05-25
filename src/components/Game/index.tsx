@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Board, Input } from 'components';
 import { calculateRowCol } from 'utils';
 
@@ -35,6 +35,7 @@ export default function Game () {
     /** 棋盘大小变化 */
     const handleBoardSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const size = Number(event.target.value);
+        if (size < 3) return;
         setBoardSize(size);
         // 重置历史
         setHistory([Array(size * size).fill(null)]);
@@ -45,6 +46,7 @@ export default function Game () {
     /** 连线长度变化 */
     const handleWinLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const len = Number(event.target.value);
+        if (len < 3) return;
         if (len > boardSize) return console.error('超过范围');
         setWinLength(len);
     };
@@ -73,7 +75,7 @@ export default function Game () {
             setHistory(nextHistory);
             setCurrentMove(nextHistory.length - 1);
         },
-        [boardSize, history]
+        [boardSize, history, currentMove]
     );
 
     // 跳转到history中的某一步
@@ -83,6 +85,13 @@ export default function Game () {
         },
         [history]
     );
+
+    // 棋盘大小变化控制连线长度变化
+    useEffect(() => {
+        if (boardSize < winLength) {
+            setWinLength(boardSize);
+        }
+    }, [boardSize]);
 
     // 渲染历史记录列表
     const moves = useMemo(() => {
@@ -116,7 +125,7 @@ export default function Game () {
                 </li>
             );
         });
-    }, [history]);
+    }, [history, currentMove]);
 
     // 根据isAscending排序moves
     // a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数
@@ -130,6 +139,7 @@ export default function Game () {
                 .sort((pre, cur) => (pre.key as number) - (cur.key as number));
     }, [isAscending, moves]);
 
+    // 切换排序
     const toggleSortOrder = useCallback(() => {
         setIsAscending(!isAscending);
     }, [isAscending]);
@@ -143,7 +153,8 @@ export default function Game () {
                     type="number"
                     value={boardSize}
                     onChange={handleBoardSizeChange}
-                    label={`棋盘大小：{${boardSize}x${boardSize}}`}
+                    label={`棋盘大小：${boardSize}x${boardSize}`}
+                    style={{ marginRight: 20 }}
                 />
                 <Input
                     type="number"
@@ -152,7 +163,6 @@ export default function Game () {
                     label={`连线长度：当前规则${winLength}子棋`}
                 />
             </div>
-
             <div className="game-board">
                 <Board
                     boardSize={boardSize}

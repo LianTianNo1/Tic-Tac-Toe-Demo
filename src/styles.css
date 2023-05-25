@@ -84,6 +84,7 @@ body {
 .game {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .game-info {
@@ -99,4 +100,6 @@ body {
   display: flex;
   width: 200px;
   flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 20px;
 }

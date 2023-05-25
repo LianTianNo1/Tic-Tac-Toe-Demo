@@ -1,4 +1,5 @@
 import { blockFun } from 'utils';
+import './index.css';
 
 interface InputProps {
     /** input类型 */
@@ -11,6 +12,8 @@ interface InputProps {
     onChange: (params: any) => void;
     /** id用来label绑定input，如果不提供则使用value */
     id?: string;
+    /** 样式 */
+    style?: React.CSSProperties;
 }
 
 /** 输入框组件 */
@@ -21,10 +24,11 @@ export default function Input (props: InputProps) {
         value = '',
         label = '',
         id = '',
+        style,
     } = props;
 
     return (
-        <label htmlFor={id || `${value}`}>
+        <label htmlFor={id || `${value}`} className="input-lbl" style={style}>
             {label}
             <input
                 id={id || `${value}`}

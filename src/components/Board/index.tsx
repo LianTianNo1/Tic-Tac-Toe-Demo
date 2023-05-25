@@ -41,7 +41,7 @@ export default function Board (props: BoardProps) {
 
     const status = useMemo(() => {
         if (winner) {
-            return `胜利者: ${winner}`;
+            return `恭喜 ${winner} 赢得了本局比赛！！！`;
         } else if (Array.from(squares).every((sq) => sq !== null)) {
             return '平局';
         }
@@ -50,10 +50,10 @@ export default function Board (props: BoardProps) {
 
     // 点击棋盘时的回调
     const handleClick = useCallback(
-        (idx: number) => {
+        (index: number) => {
             // 如果有赢家或者已经下过了,就返回
             if (
-                squares[idx] ||
+                squares[index] ||
                 calculateWinner(squares, { boardSize, winLength })
             ) {
                 return;
@@ -61,9 +61,9 @@ export default function Board (props: BoardProps) {
             const nextSquares = squares.slice();
             // 根据xIsNext判断该下X棋还是O棋
             if (xIsNext) {
-                nextSquares[idx] = 'X';
+                nextSquares[index] = 'X';
             } else {
-                nextSquares[idx] = 'O';
+                nextSquares[index] = 'O';
             }
             // 调用上层Game组件传递的onPlay方法
             onPlay(nextSquares);
@@ -75,22 +75,21 @@ export default function Board (props: BoardProps) {
     const board = useMemo(() => {
         return Array.from({ length: boardSize }).map((
             _record,
-            idx // 生成boardSize行
+            index // 生成boardSize行
         ) => (
-            <div key={idx} className="board-row">
+            <div key={index} className="board-row">
                 {Array.from({ length: boardSize }).map((
                     _record2,
-                    jdx // 每行boardSize列
+                    jIndex // 每行boardSize列
                 ) => (
                     <Square
-                        key={(idx * boardSize) + jdx}
-                        value={squares[(idx * boardSize) + jdx]}
+                        key={(index * boardSize) + jIndex}
+                        value={squares[(index * boardSize) + jIndex]}
                         onSquareClick={() =>
-                            handleClick((idx * boardSize) + jdx)
+                            handleClick((index * boardSize) + jIndex)
                         }
                         highlight={
-                            (line &&
-                                        line.includes((idx * boardSize) + jdx)) as boolean
+                            (line && line.includes((index * boardSize) + jIndex)) as boolean
                         } // 高亮square
                     />
                 ))}
