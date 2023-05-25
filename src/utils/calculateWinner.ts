@@ -81,7 +81,7 @@ export default function calculateWinner (
                 // 获胜棋子是线段第一个格子上的棋子
                 winner: squares[line[0]],
                 // 胜利线段
-                line,
+                highlightedLine: line,
             };
         }
     }
