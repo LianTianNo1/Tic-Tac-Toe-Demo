@@ -1,6 +1,7 @@
-import React from "react";
-import { Game } from "components";
+import React from 'react';
+import { Game } from 'components';
 
-export default function App() {
-  return <Game />;
+/** APP入口 */
+export default function App () {
+    return <Game />;
 }
