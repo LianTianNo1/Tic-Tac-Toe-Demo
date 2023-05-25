@@ -1,4 +1,5 @@
 import React from "react";
+import { blockFun } from "utils";
 
 interface SquareProps {
   /** 显示值 */
@@ -11,7 +12,7 @@ interface SquareProps {
 
 /** 定义棋子Square组件 */
 export default function Square(props: SquareProps) {
-  const { highlight = false, value, onSquareClick } = props;
+  const { highlight = false, value = "", onSquareClick = blockFun } = props;
 
   return (
     <button

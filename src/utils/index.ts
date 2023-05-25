@@ -8,7 +8,7 @@ export function calculateWinner(
   squares: string[],
   { boardSize, winLength }: CalculateWinnerArgs
 ) {
-  const lines = [];
+  const lines: number[][] = [];
 
   // 横线
   for (let i = 0; i < boardSize; i++) {
@@ -38,28 +38,30 @@ export function calculateWinner(
     }
   }
 
-  // 左上到右下 对角线
+  // 左上到右下的斜线查找，boardSize - winLength 行结束，从 boardSize - winLength 行开始，斜线长度不足以构成连线
+  // +1 是为了包含最后一个能够构成连线的起始位置
   for (let i = 0; i < boardSize - winLength + 1; i++) {
-    // 从左上角第一个格子开始,尝试找到长度为winLength的对角线
-    for (let j = 0; j <= i; j++) {
-      // j <= i说明这是左上到右下的对角线
-      lines.push([i * boardSize + j, (i + 1) * boardSize + j + 1]);
-      // 首先推入第一和第二个格子到线段
-      for (let k = 2; k < winLength; k++) {
+    // j 控制起始列的索引，从第一列开始到 boardSize - winLength 列结束。
+    for (let j = 0; j < boardSize - winLength + 1; j++) {
+      // 在每个起始位置 (i, j)，创建一个空数组 lines.push([])，用于存储斜线上的方格索引
+      lines.push([]);
+      for (let k = 0; k < winLength; k++) {
+        // k 从 0 到 winLength - 1，计算斜线上每个方格的索引，并将其添加到当前行的数组中。
+        // 方格索引通过 (i + k) * boardSize + j + k 计算得到，其中 i + k 表示行索引的偏移量，j + k 表示列索引的偏移量
         lines[lines.length - 1].push((i + k) * boardSize + j + k);
       }
     }
   }
 
-  // 右上到左下 对角线
-  for (let i = winLength - 1; i < boardSize; i++) {
-    // 从右上角第一个格子开始,尝试找到长度为winLength的对角线
-    for (let j = 0; j < boardSize - i; j++) {
-      // j < boardSize - i 说明这是右上到左下的对角线
-      lines.push([i * boardSize + j, (i - 1) * boardSize + j + 1]);
-      // 首先推入第一和第二个格子到线段
-      for (let k = 2; k < winLength; k++) {
-        lines[lines.length - 1].push((i - k) * boardSize + j + k);
+  // 右上到左下的斜线查找
+  for (let i = 0; i < boardSize - winLength + 1; i++) {
+    //  j 控制起始列的索引，从 winLength - 1 列开始到最后一列。
+    for (let j = winLength - 1; j < boardSize; j++) {
+      // 创建一个新的空数组，用于存储斜线上的方格索引
+      lines.push([]);
+      for (let k = 0; k < winLength; k++) {
+        // 将斜线上的方格索引添加到当前行中
+        lines[lines.length - 1].push((i + k) * boardSize + j - k);
       }
     }
   }
@@ -108,3 +110,6 @@ export function calculateRowCol(
     }
   }
 }
+
+/** 空白方法 */
+export const blockFun = () => {};
