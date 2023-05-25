@@ -74,7 +74,7 @@ export default function useGameState () {
                     history[move],
                     boardSize
                 );
-                description = `跳转到第${move}步, 当前坐标 (${rowCol})`;
+                description = `跳转到第 ${move} 步, 坐标 (${rowCol})`;
             } else {
                 description = '进入游戏开始';
             }

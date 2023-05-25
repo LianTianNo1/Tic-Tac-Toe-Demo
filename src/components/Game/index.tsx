@@ -36,22 +36,24 @@ export default function Game () {
                     label={`连线长度：当前规则${winLength}子棋`}
                 />
             </div>
-            <div className="game-board">
-                <Board
-                    boardSize={boardSize}
-                    winLength={winLength}
-                    xIsNext={xIsNext}
-                    squares={currentSquares}
-                    onPlay={handlePlay}
-                />
-            </div>
-            <div className="game-info">
-                {/* 添加排序按钮 */}
-                <button onClick={toggleSortOrder}>
-                    {isAscending ? '正序' : '倒序'}
-                </button>
-                {/* 显示排序历史记录 */}
-                <ol>{sortedMoves}</ol>
+            <div className="game-wrap">
+                <div className="game-board">
+                    <Board
+                        boardSize={boardSize}
+                        winLength={winLength}
+                        xIsNext={xIsNext}
+                        squares={currentSquares}
+                        onPlay={handlePlay}
+                    />
+                </div>
+                <div className="game-info">
+                    {/* 添加排序按钮 */}
+                    <button onClick={toggleSortOrder}>
+                        {isAscending ? '正序' : '倒序'}
+                    </button>
+                    {/* 显示排序历史记录 */}
+                    <ol className='record-list'>{sortedMoves}</ol>
+                </div>
             </div>
         </div>
     );
