@@ -7,13 +7,13 @@ const ChessPiece = React.memo((props: ChessPieceProps) => {
 
     const handleSquareClick = useCallback(
         () => {
-            // eslint-disable-next-line no-console
-            console.log('棋子');
             onSquareClick(idx);
         },
         [onSquareClick, idx]
     );
 
+    // eslint-disable-next-line no-console
+    console.log('棋子');
     return (
         <button
             className={`square ${highlight ? 'highlight' : ''}`}

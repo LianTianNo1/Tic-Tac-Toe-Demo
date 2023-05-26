@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { blockFun, calculateWinner } from 'utils';
 
 /** 棋子内容 */
-const X_SYMBOL = 'X';
-const O_SYMBOL = 'O';
+export const X_SYMBOL = 'X';
+export const O_SYMBOL = 'O';
 
 /** 棋盘hook */
 export default function useBoard (props: BoardProps) {
@@ -28,17 +28,6 @@ export default function useBoard (props: BoardProps) {
         setWinner(winnerData && winnerData.winner);
         setHighlightedLine(winnerData && winnerData.highlightedLine);
     }, [squares, boardSize, winLength]);
-
-
-    /** 棋盘状态 */
-    const status = useMemo(() => {
-        if (winner) {
-            return `恭喜 ${winner} 赢得了本局比赛！！！`;
-        } else if (Array.from(squares).every((sq) => sq !== null)) {
-            return '平局';
-        }
-        return `下一个回合: ${xIsNext ? X_SYMBOL : O_SYMBOL}`;
-    }, [winner, squares]);
 
     /** 点击棋盘时的回调 */
     const handleSquareClick = useCallback(
@@ -65,7 +54,6 @@ export default function useBoard (props: BoardProps) {
 
     return {
         winner,
-        status,
         boardSize,
         squares,
         highlightedLine,
