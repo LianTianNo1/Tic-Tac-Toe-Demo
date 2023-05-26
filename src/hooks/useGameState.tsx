@@ -22,14 +22,10 @@ export default function useGameState () {
     const [isAscending, setIsAscending] = useState<IsAscendingType>(true);
     // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
     const currentSquares = history[currentMove];
-    /**
-     * 如果 currentMove 是偶数,则 xIsNext 为 true。
-     * 如果 currentMove 是奇数,则 xIsNext 为 false。
-     * 所以通过这个简单的计算,我们可以清楚地知道在任何一步,该谁下棋(X或O)。
-     */
+    // 如果 currentMove 是偶数,则 xIsNext 为 true 反之 xIsNext 为 false可以清楚地知道在任何一步,该谁下棋(默认是X或O)。
     const xIsNext = useMemo(() => currentMove % 2 === 0, [currentMove]);
 
-    // 点击棋盘时的回调,更新history和xIsNext
+    /** 点击棋盘时的回调,更新history和xIsNext */
     const handlePlay = useCallback(
         (nextSquares: string[]) => {
             // 获取从history中前currentMove+1步的子数组,并拼接上nextSquares
@@ -44,7 +40,7 @@ export default function useGameState () {
         [boardSize, history, currentMove]
     );
 
-    // 跳转到history中的某一步
+    /** 跳转到history中的某一步 */
     const jumpTo = useCallback(
         (nextMove: number) => {
             setCurrentMove(nextMove);
@@ -53,18 +49,18 @@ export default function useGameState () {
     );
 
 
-    // 棋盘大小变化控制连线长度变化
+    /** 棋盘大小变化控制连线长度变化 */
     useEffect(() => {
         if (boardSize < winLength) {
             setWinLength(boardSize);
         }
     }, [boardSize]);
 
-    // 渲染历史记录列表
+    /** 渲染历史记录列表 */
     const moves = useMemo(() => {
         return history.map((record, move) => {
             let description;
-            // 仅对于当前移动，显示“您正在移动#...”而不是按钮
+            // 仅对于当前移动，显示不同的提示
             if (move === currentMove) {
                 description = `您正在移动第${move}步`;
             } else if (move > 0) {
@@ -81,7 +77,7 @@ export default function useGameState () {
             // 返回历史记录按钮
             return (
                 <li key={move}>
-                    {/* 仅对于当前移动，显示“您正在移动#...”而不是按钮 */}
+                    {/* 判断正在移动还是跳转按钮 */}
                     {move === currentMove ? (
                         description
                     ) : (
@@ -94,7 +90,7 @@ export default function useGameState () {
         });
     }, [history, currentMove]);
 
-    // 根据isAscending排序moves,a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数
+    /** 根据isAscending排序moves,a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数 */
     const sortedMoves = useMemo(() => {
         return isAscending
             ? moves
@@ -105,7 +101,7 @@ export default function useGameState () {
                 .sort((pre, cur) => Number(cur.key) - Number(pre.key));
     }, [isAscending, moves]);
 
-    // 切换排序
+    /** 切换排序 */
     const toggleSortOrder = useCallback(() => {
         setIsAscending(!isAscending);
     }, [isAscending]);

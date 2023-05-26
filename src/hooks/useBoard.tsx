@@ -39,7 +39,7 @@ export default function useBoard (props: BoardProps) {
     // 高亮线段
     const [highlightedLine, setHighlightedLine] = useState<HighlightedLineType>([]);
 
-    // 计算赢家
+    /** 计算赢家 */
     useEffect(() => {
         const winnerData: winnerDataType = calculateWinner(squares, {
             boardSize,
@@ -49,6 +49,7 @@ export default function useBoard (props: BoardProps) {
         setHighlightedLine(winnerData && winnerData.highlightedLine);
     }, [squares, boardSize, winLength]);
 
+    /** 棋盘状态 */
     const status = useMemo(() => {
         if (winner) {
             return `恭喜 ${winner} 赢得了本局比赛！！！`;
@@ -58,7 +59,7 @@ export default function useBoard (props: BoardProps) {
         return `下一个回合: ${xIsNext ? X_SYMBOL : O_SYMBOL}`;
     }, [winner, squares]);
 
-    // 点击棋盘时的回调
+    /** 点击棋盘时的回调 */
     const handleSquareClick = useCallback(
         (index: number) => {
             // 如果有赢家或者已经下过了,就返回
