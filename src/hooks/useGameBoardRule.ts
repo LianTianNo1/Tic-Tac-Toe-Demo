@@ -9,8 +9,8 @@ const DEFAULT_WIN_LENGTH = 3;
 // 默认第0步
 export const DEFAULT_CURRENT_MOVE = 0;
 
-/** 管理棋盘状态 */
-export default function useBoardState () {
+/** 设置游戏棋盘规则大小和连线长度 */
+export default function useGameBoardRule () {
     // 棋盘大小
     const [boardSize, setBoardSize] = useState<BoardSizeType>(DEFAULT_BOARD_SIZE);
     // 连线长度

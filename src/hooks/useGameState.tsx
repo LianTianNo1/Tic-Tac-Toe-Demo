@@ -1,6 +1,6 @@
 import { calculateRowCol } from 'utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useBoardState } from 'hooks';
+import { useGameBoardRule } from 'hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { setHistory, setCurrentMove } from 'store/actions';
 
@@ -12,7 +12,7 @@ export default function useGameState () {
         setWinLength,
         handleBoardSizeChange,
         handleWinLengthChange,
-    } = useBoardState();
+    } = useGameBoardRule();
 
     const dispatch = useDispatch();
     /** 游戏历史记录 */
