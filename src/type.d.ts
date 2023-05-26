@@ -34,9 +34,11 @@ interface ChessPieceProps {
     /** 显示值 */
     value: string;
     /** 父类点击事件 */
-    onSquareClick: () => void;
+    onSquareClick: (index: number) => void;
     /** 是否高亮 */
     highlight: boolean;
+    /** 下标 */
+    idx: number;
 }
 
 interface InputProps {
