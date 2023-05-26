@@ -1,18 +1,8 @@
 import React from 'react';
-import { Square } from 'components';
+import { ChessPiece } from 'components';
 
-interface BoardProps {
-    /** 棋盘大小 */
-    boardSize: number;
-    /** 棋盘数据 */
-    squares: string[];
-    /** 高亮线 */
-    highlightedLine: number[];
-    /** 点击棋盘回调 */
-    onSquareClick: (index: number) => void;
-}
 /** 渲染棋盘格子 */
-export default function BoardContent (props: BoardProps) {
+export default function BoardContent (props: BoardContentProps) {
     const {
         boardSize,
         squares,
@@ -31,7 +21,7 @@ export default function BoardContent (props: BoardProps) {
                         _record2,
                         jIndex // 每行boardSize列
                     ) => (
-                        <Square
+                        <ChessPiece
                             key={(index * boardSize) + jIndex}
                             value={squares[(index * boardSize) + jIndex]}
                             onSquareClick={() =>

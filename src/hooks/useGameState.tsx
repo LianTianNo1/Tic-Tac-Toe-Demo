@@ -2,8 +2,6 @@ import { calculateRowCol } from 'utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBoardState } from 'hooks';
 
-export type IsAscendingType = boolean;
-
 /** 管理游戏状态 */
 export default function useGameState () {
     const {

@@ -1,30 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { blockFun, calculateWinner } from 'utils';
-import { BoardContent } from 'components';
-
-export interface BoardProps {
-    /** 棋盘大小 */
-    boardSize: number;
-    /** 连线长度 */
-    winLength: number;
-    /** 是否X，用来判断X或者O */
-    xIsNext: boolean;
-    /** 存储棋盘的数据 */
-    squares: string[];
-    /** 父类的更新历史的方法 */
-    onPlay: (squares: string[]) => void;
-}
-
-/** 胜利者 */
-type WinnerType = string;
-/** 高亮路线 */
-type HighlightedLineType = number[];
-
-/** 计算的赢的玩家是谁，赢的路线 */
-interface winnerDataType {
-    winner: WinnerType;
-    highlightedLine: HighlightedLineType;
-}
 
 /** 棋子内容 */
 const X_SYMBOL = 'X';
@@ -85,15 +60,9 @@ export default function useBoard (props: BoardProps) {
     return {
         winner,
         status,
+        boardSize,
+        squares,
         highlightedLine,
-        board: (
-            <BoardContent
-                boardSize={boardSize}
-                squares={squares}
-                highlightedLine={highlightedLine}
-                onSquareClick={handleSquareClick}
-            />
-        ),
         handleSquareClick,
     };
 }

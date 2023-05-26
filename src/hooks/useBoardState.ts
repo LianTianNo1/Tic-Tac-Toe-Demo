@@ -1,10 +1,5 @@
 import { useCallback, useState } from 'react';
 
-type BoardSizeType = number;
-type WinLengthType = number;
-type HistoryType = string[][];
-type CurrentMoveType = number;
-
 // 默认棋盘大小长度
 const DEFAULT_BOARD_SIZE = 6;
 // 默认连线长度

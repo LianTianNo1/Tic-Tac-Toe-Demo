@@ -1,17 +1,8 @@
 import React from 'react';
 import { blockFun } from 'utils';
 
-interface SquareProps {
-    /** 显示值 */
-    value: string;
-    /** 父类点击事件 */
-    onSquareClick: () => void;
-    /** 是否高亮 */
-    highlight: boolean;
-}
-
 /** 定义棋子Square组件 */
-export default function Square (props: SquareProps) {
+export default function ChessPiece (props: ChessPieceProps) {
     const { highlight = false, value = '', onSquareClick = blockFun } = props;
 
     return (
