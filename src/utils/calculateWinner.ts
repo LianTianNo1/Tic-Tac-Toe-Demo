@@ -32,47 +32,30 @@ export default function calculateWinner (
         // 计数器，初始为1因为算上自己
         let count = 1;
 
-        // 向一个方向延伸
-        for (let step = 1; step < winLength; step++) {
+        // dt=1向一个方向延伸 dt=-1向相反方向延伸
+        for (let dt = -1; dt <= 1; dt += 2) {
+            for (let step = 1; step < winLength; step++) {
             // 计算新位置的行
-            const newRow = currentRow + (step * dx);
-            // 计算新位置的列
-            const newCol = currentCol + (step * dy);
-            // 计算新位置的索引
-            const newIndex = (newRow * boardSize) + newCol;
+                const newRow = currentRow + (step * dt * dx);
+                // 计算新位置的列
+                const newCol = currentCol + (step * dt * dy);
+                // 计算新位置的索引
+                const newIndex = (newRow * boardSize) + newCol;
 
-            // 判断新位置是否越界，越界，停止延伸
-            if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize) {
-                break;
-            }
+                // 判断新位置是否越界，越界，停止延伸
+                if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize) {
+                    break;
+                }
 
-            if (squares[newIndex] === currentPlayer) {
+                if (squares[newIndex] === currentPlayer) {
                 // 新位置上的棋子属于当前玩家，将其添加到胜利线上
-                line.push(newIndex);
-                // 增加计数器的值
-                count++;
-            } else {
+                    line.push(newIndex);
+                    // 增加计数器的值
+                    count++;
+                } else {
                 // 新位置上的棋子不属于当前玩家，停止延伸
-                break;
-            }
-        }
-
-        // 向相反方向延伸
-        for (let step = 1; step < winLength; step++) {
-            const newRow = currentRow - (step * dx);
-            const newCol = currentCol - (step * dy);
-            const newIndex = (newRow * boardSize) + newCol;
-
-            // 判断新位置是否越界
-            if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize) {
-                break;
-            }
-
-            if (squares[newIndex] === currentPlayer) {
-                line.push(newIndex);
-                count++;
-            } else {
-                break;
+                    break;
+                }
             }
         }
 

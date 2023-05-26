@@ -76,3 +76,9 @@ interface HistoryState {
     history: Array<Array<string | null>>;
     currentMove: number;
 }
+
+/** ActionType */
+interface ActionType {
+    type: string;
+    payload: any;
+}
