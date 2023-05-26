@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { blockFun, calculateWinner } from 'utils';
 
 /** 棋子内容 */
@@ -9,20 +10,25 @@ const O_SYMBOL = 'O';
 export default function useBoard (props: BoardProps) {
     const { boardSize, winLength, xIsNext, squares, onPlay = blockFun } = props;
 
-    // 赢家
+    /** 赢家 */
     const [winner, setWinner] = useState<WinnerType>('');
-    // 高亮线段
+    /** 高亮线段 */
     const [highlightedLine, setHighlightedLine] = useState<HighlightedLineType>([]);
+    /** 历史游戏 */
+    const history = useSelector((state: HistoryState) => state.history);
+    /** 当前所在的步骤 */
+    const currentMove = useSelector((state: HistoryState) => state.currentMove);
 
     /** 计算赢家 */
     useEffect(() => {
-        const winnerData: winnerDataType = calculateWinner(squares, {
+        const winnerData: winnerDataType = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], {
             boardSize,
             winLength,
         }) as winnerDataType;
         setWinner(winnerData && winnerData.winner);
         setHighlightedLine(winnerData && winnerData.highlightedLine);
     }, [squares, boardSize, winLength]);
+
 
     /** 棋盘状态 */
     const status = useMemo(() => {
@@ -40,7 +46,7 @@ export default function useBoard (props: BoardProps) {
             // 如果有赢家或者已经下过了,就返回
             if (
                 squares[index] ||
-                calculateWinner(squares, { boardSize, winLength })
+                calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], { boardSize, winLength })
             ) {
                 return;
             }
