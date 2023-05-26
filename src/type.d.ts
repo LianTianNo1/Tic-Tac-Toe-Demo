@@ -70,3 +70,9 @@ type IsAscendingType = boolean;
 type WinnerType = string;
 /** 高亮路线 */
 type HighlightedLineType = number[];
+
+/** 历史记录 */
+interface HistoryState {
+    history: Array<Array<string | null>>;
+    currentMove: number;
+}

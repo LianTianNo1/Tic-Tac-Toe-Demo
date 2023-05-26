@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setHistory, setCurrentMove } from 'store/actions';
 
 // 默认棋盘大小长度
-const DEFAULT_BOARD_SIZE = 6;
+export const DEFAULT_BOARD_SIZE = 6;
 // 默认连线长度
 const DEFAULT_WIN_LENGTH = 3;
 // 默认第0步
-const DEFAULT_CURRENT_MOVE = 0;
+export const DEFAULT_CURRENT_MOVE = 0;
 
 /** 管理棋盘状态 */
 export default function useBoardState () {
@@ -13,35 +15,39 @@ export default function useBoardState () {
     const [boardSize, setBoardSize] = useState<BoardSizeType>(DEFAULT_BOARD_SIZE);
     // 连线长度
     const [winLength, setWinLength] = useState<WinLengthType>(DEFAULT_WIN_LENGTH);
-    // useState hook 定义history和currentMove状态
-    const [history, setHistory] = useState<HistoryType>([Array(boardSize * boardSize).fill(null)]);
-    const [currentMove, setCurrentMove] =
-        useState<CurrentMoveType>(DEFAULT_CURRENT_MOVE);
+    const dispatch = useDispatch();
 
     /** 棋盘大小变化 */
-    const handleBoardSizeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const size = Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value));
-        setBoardSize(size);
-        // 重置历史
-        setHistory([Array(size * size).fill(null)]);
-        // 重置currentMove
-        setCurrentMove(0);
-    }, []);
+    const handleBoardSizeChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const size = Math.max(
+                DEFAULT_WIN_LENGTH,
+                Number(event.target.value)
+            );
+            setBoardSize(size);
+            dispatch(setHistory([Array(size * size).fill(null)]));
+            dispatch(setCurrentMove(DEFAULT_CURRENT_MOVE));
+        },
+        []
+    );
 
     /** 连线长度变化 */
-    const handleWinLengthChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setWinLength(Math.min(Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value)), boardSize));
-    }, [boardSize]);
+    const handleWinLengthChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setWinLength(Math.min(
+                Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value)),
+                boardSize
+            ));
+        },
+        [boardSize]
+    );
 
     return {
         boardSize,
         winLength,
         history,
-        currentMove,
         handleBoardSizeChange,
         handleWinLengthChange,
-        setHistory,
-        setCurrentMove,
         setWinLength,
     };
 }

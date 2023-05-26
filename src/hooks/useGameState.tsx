@@ -1,21 +1,24 @@
 import { calculateRowCol } from 'utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBoardState } from 'hooks';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHistory, setCurrentMove } from 'store/actions';
 
 /** 管理游戏状态 */
 export default function useGameState () {
     const {
         boardSize,
         winLength,
-        history,
-        currentMove,
-        setHistory,
-        setCurrentMove,
         setWinLength,
         handleBoardSizeChange,
         handleWinLengthChange,
     } = useBoardState();
 
+    const dispatch = useDispatch();
+    /** 游戏历史记录 */
+    const history = useSelector((state: HistoryState) => state.history);
+    /** 当前所在的步骤 */
+    const currentMove = useSelector((state: HistoryState) => state.currentMove);
     // 添加排序标志
     const [isAscending, setIsAscending] = useState<IsAscendingType>(true);
     // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
@@ -32,8 +35,8 @@ export default function useGameState () {
                 nextSquares,
             ];
             // 更新history和currentMove
-            setHistory(nextHistory);
-            setCurrentMove(nextHistory.length - 1);
+            dispatch(setHistory(nextHistory));
+            dispatch(setCurrentMove(nextHistory.length - 1));
         },
         [boardSize, history, currentMove]
     );
@@ -42,6 +45,7 @@ export default function useGameState () {
     const jumpTo = useCallback(
         (nextMove: number) => {
             setCurrentMove(nextMove);
+            dispatch(setCurrentMove(nextMove));
         },
         [history]
     );
@@ -64,8 +68,8 @@ export default function useGameState () {
             } else if (move > 0) {
                 // 如果不是第一步,显示跳转文字和行列号
                 const rowCol = calculateRowCol(
-                    history[move - 1],
-                    history[move],
+                    history[move - 1] as string [],
+                    history[move] as string [],
                     boardSize
                 );
                 description = `跳转到第 ${move} 步, 坐标 (${rowCol})`;

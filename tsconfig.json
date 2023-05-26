@@ -25,6 +25,7 @@
       "components/*": ["components/*"],
       "utils/*": ["utils/*"],
       "hooks/*": ["hooks/*"],
+      "store/*": ["store/*"]
     }
   },
   "include": [

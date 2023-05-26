@@ -42,7 +42,7 @@ export default function Game () {
                         boardSize={boardSize}
                         winLength={winLength}
                         xIsNext={xIsNext}
-                        squares={currentSquares}
+                        squares={currentSquares as string []}
                         onPlay={handlePlay}
                     />
                 </div>
