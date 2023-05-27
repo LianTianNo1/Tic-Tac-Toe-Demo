@@ -33,8 +33,8 @@ interface winnerDataType {
 interface ChessPieceProps {
     /** 显示值 */
     value: string;
-    /** 父类点击事件 */
-    onSquareClick: (index: number) => void;
+    /** 改变棋盘全局index事件 */
+    onChangeCurrentIdx: (index: number) => void;
     /** 是否高亮 */
     highlight: boolean;
     /** 下标 */
@@ -70,6 +70,8 @@ type IsAscendingType = boolean;
 type WinnerType = string;
 /** 高亮路线 */
 type HighlightedLineType = number[];
+/** 棋盘当前点击的Index */
+type CurrentIdxType = number | null;
 
 /** 历史记录 */
 interface HistoryState {

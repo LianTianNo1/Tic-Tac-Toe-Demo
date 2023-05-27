@@ -1,9 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChessPiece } from 'components';
 
 /** 渲染棋盘格子 */
 export default React.memo((props: BoardContentProps) => {
     const { boardSize, squares, highlightedLine, onSquareClick } = props;
+
+    /** 维护棋盘的当前点击的下标 */
+    const [currentIdx, setCurrentIdx] = useState<CurrentIdxType>(null);
+
+    /** 改变Index */
+    const handleChangeCurrentIdx = useCallback((index: number) => {
+        setCurrentIdx(index);
+    }, []);
+
+    useEffect(() => {
+        onSquareClick(currentIdx as number);
+    }, [currentIdx]);
 
     const renderChessPiece = useMemo(
         () =>
@@ -16,7 +28,7 @@ export default React.memo((props: BoardContentProps) => {
                                 idx={squareIndex}
                                 key={squareIndex}
                                 value={squares[squareIndex]}
-                                onSquareClick={onSquareClick}
+                                onChangeCurrentIdx={handleChangeCurrentIdx}
                                 highlight={highlightedLine?.includes(squareIndex) || false}
                             />
                         );

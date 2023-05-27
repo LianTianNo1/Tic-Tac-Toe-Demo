@@ -49,7 +49,7 @@ export default function useBoard (props: BoardProps) {
             // 调用上层Game组件传递的onPlay方法
             onPlay(nextSquares);
         },
-        [squares]
+        [squares, history, currentMove]
     );
 
     return {
