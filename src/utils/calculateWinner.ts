@@ -68,15 +68,6 @@ export default function calculateWinner (
                 }
             }
         }
-
-        if (count >= winLength) {
-            return {
-                // 当前玩家获胜
-                winner: currentPlayer,
-                // 胜利线上的位置
-                highlightedLine: line,
-            };
-        }
     }
     // 没有找到获胜者，返回null
     return null;
