@@ -1,7 +1,4 @@
-interface CalculateWinnerArgs {
-    boardSize: number;  // 棋盘尺寸
-    winLength: number;  // 胜利条件：连续多少个相同棋子
-}
+
 
 /** 计算赢家的函数 */
 export default function calculateWinner (
@@ -10,7 +7,7 @@ export default function calculateWinner (
     // 上一步的棋盘格子的数组
     preSquares: string[],
     // 参数对象包含棋盘尺寸和胜利条件
-    { boardSize, winLength }: CalculateWinnerArgs
+    { boardSize, winLength }: Board.CalculateWinnerArgs
 ) {
     const directions: [number, number][] = [
         [0, 1],     // 右方向

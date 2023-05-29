@@ -18,11 +18,11 @@ declare namespace Board {
     /** 棋盘格子 */
     export interface BoardContentProps {
     /** 棋盘数据 */
-        squares: string[];
+        squares: SquaresType;
         /** 棋盘大小 */
-        boardSize: number;
+        boardSize: BoardSizeType;
         /** 高亮线 */
-        highlightedLine: number[];
+        highlightedLine: HighlightedLineType;
         /** 点击棋盘回调 */
         onSquareClick: (index: number) => void;
     }
@@ -31,14 +31,20 @@ declare namespace Board {
     export interface BoardProps {
         xIsNext: boolean;
         /** 存储棋盘的数据 */
-        squares: string[];
+        squares: SquaresType;
         /** 棋盘大小 */
-        boardSize: number;
+        boardSize: BoardSizeType;
         /** 连线长度 */
-        winLength: number;
+        winLength: WinLengthType;
         /** 是否X，用来判断X或者O */
         /** 父类的更新历史的方法 */
-        onPlay: (squares: string[]) => void;
+        onPlay: (squares: SquaresType) => void;
+    }
+
+    /** 棋盘尺寸 胜利条件 */
+    export interface CalculateWinnerArgs {
+        boardSize: BoardSizeType;
+        winLength: WinLengthType;
     }
 
     /** 计算的赢的玩家是谁，赢的路线 */
@@ -46,6 +52,9 @@ declare namespace Board {
         winner: WinnerType;
         highlightedLine: HighlightedLineType;
     }
+
+    /** 棋盘数据 */
+    export type SquaresType = string[];
     /** 棋盘大小 */
     export type BoardSizeType = number;
     /** 连线长度 */
@@ -82,7 +91,7 @@ declare namespace Game {
     }
 
     /** 历史记录 */
-    export type HistoryType = string[][];
+    export type HistoryType = Board.SquaresType[];
     /** 当前移动第几步 */
     export type CurrentMoveType = number;
     /** 排序 */
