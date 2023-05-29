@@ -48,12 +48,22 @@ export default function calculateWinner (
                 }
 
                 if (squares[newIndex] === currentPlayer) {
-                // 新位置上的棋子属于当前玩家，将其添加到胜利线上
+                    // 新位置上的棋子属于当前玩家，将其添加到胜利线上
                     line.push(newIndex);
                     // 增加计数器的值
                     count++;
+
+                    // 剪枝
+                    if (count >= winLength) {
+                        return {
+                            // 当前玩家获胜
+                            winner: currentPlayer,
+                            // 胜利线上的位置
+                            highlightedLine: line,
+                        };
+                    }
                 } else {
-                // 新位置上的棋子不属于当前玩家，停止延伸
+                    // 新位置上的棋子不属于当前玩家，停止延伸
                     break;
                 }
             }
