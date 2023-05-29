@@ -2,7 +2,7 @@ import { blockFun } from 'utils';
 import './index.css';
 
 /** 输入框组件 */
-export default function Input (props: InputProps) {
+export default function Input (props: Game.InputProps) {
     const {
         type = 'number',
         onChange = blockFun,

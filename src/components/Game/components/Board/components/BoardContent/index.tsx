@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChessPiece } from 'components';
 
 /** 渲染棋盘格子 */
-export default function BoardContent (props: BoardContentProps) {
+export default function BoardContent (props: Board.BoardContentProps) {
     const { boardSize, squares, highlightedLine, onSquareClick } = props;
 
     /** 维护棋盘的当前点击的下标 */
-    const [currentIdx, setCurrentIdx] = useState<CurrentIdxType>(null);
+    const [currentIdx, setCurrentIdx] = useState<Board.CurrentIdxType>(null);
 
     /** 改变Index */
     const handleChangeCurrentIdx = useCallback((index: number) => {

@@ -15,11 +15,11 @@ export default function useGameState () {
 
     const dispatch = useDispatch();
     /** 游戏历史记录 */
-    const history = useSelector((state: HistoryState) => state.history);
+    const history = useSelector((state: Game.HistoryState) => state.history);
     /** 当前所在的步骤 */
-    const currentMove = useSelector((state: HistoryState) => state.currentMove);
+    const currentMove = useSelector((state: Game.HistoryState) => state.currentMove);
     // 添加排序标志
-    const [isAscending, setIsAscending] = useState<IsAscendingType>(true);
+    const [isAscending, setIsAscending] = useState<Game.IsAscendingType>(true);
     // 获取当前棋盘状态,从history中取currentMove对应的棋盘状态
     const currentSquares = history[currentMove];
     // 如果 currentMove 是偶数,则 xIsNext 为 true 反之 xIsNext 为 false可以清楚地知道在任何一步,该谁下棋(默认是X或O)。

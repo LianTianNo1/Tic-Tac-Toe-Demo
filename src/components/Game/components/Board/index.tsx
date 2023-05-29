@@ -4,7 +4,7 @@ import { useBoard } from 'hooks';
 import { O_SYMBOL, X_SYMBOL } from 'hooks/useBoard';
 
 /** 定义棋盘Board组件 */
-export default function Board (props: BoardProps) {
+export default function Board (props: Board.BoardProps) {
     const { winner, boardSize, squares, highlightedLine, handleSquareClick } = useBoard(props);
 
     /** 棋盘状态 */

@@ -7,24 +7,24 @@ export const X_SYMBOL = 'X';
 export const O_SYMBOL = 'O';
 
 /** 棋盘hook */
-export default function useBoard (props: BoardProps) {
+export default function useBoard (props: Board.BoardProps) {
     const { boardSize, winLength, xIsNext, squares, onPlay = blockFun } = props;
 
     /** 赢家 */
-    const [winner, setWinner] = useState<WinnerType>('');
+    const [winner, setWinner] = useState<Board.WinnerType>('');
     /** 高亮线段 */
-    const [highlightedLine, setHighlightedLine] = useState<HighlightedLineType>([]);
+    const [highlightedLine, setHighlightedLine] = useState<Board.HighlightedLineType>([]);
     /** 历史游戏 */
-    const history = useSelector((state: HistoryState) => state.history);
+    const history = useSelector((state: Game.HistoryState) => state.history);
     /** 当前所在的步骤 */
-    const currentMove = useSelector((state: HistoryState) => state.currentMove);
+    const currentMove = useSelector((state: Game.HistoryState) => state.currentMove);
 
     /** 计算赢家 */
     useEffect(() => {
-        const winnerData: winnerDataType = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], {
+        const winnerData: Board.winnerDataType = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], {
             boardSize,
             winLength,
-        }) as winnerDataType;
+        }) as Board.winnerDataType;
         setWinner(winnerData && winnerData.winner);
         setHighlightedLine(winnerData && winnerData.highlightedLine);
     }, [squares, boardSize, winLength]);

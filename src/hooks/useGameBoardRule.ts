@@ -12,9 +12,9 @@ export const DEFAULT_CURRENT_MOVE = 0;
 /** 设置游戏棋盘规则大小和连线长度 */
 export default function useGameBoardRule () {
     // 棋盘大小
-    const [boardSize, setBoardSize] = useState<BoardSizeType>(DEFAULT_BOARD_SIZE);
+    const [boardSize, setBoardSize] = useState<Board.BoardSizeType>(DEFAULT_BOARD_SIZE);
     // 连线长度
-    const [winLength, setWinLength] = useState<WinLengthType>(DEFAULT_WIN_LENGTH);
+    const [winLength, setWinLength] = useState<Board.WinLengthType>(DEFAULT_WIN_LENGTH);
     const dispatch = useDispatch();
 
     /** 棋盘大小变化 */
