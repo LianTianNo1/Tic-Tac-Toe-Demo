@@ -1,9 +1,9 @@
 /** 棋盘格子 */
 interface BoardContentProps {
-    /** 棋盘大小 */
-    boardSize: number;
     /** 棋盘数据 */
     squares: string[];
+    /** 棋盘大小 */
+    boardSize: number;
     /** 高亮线 */
     highlightedLine: number[];
     /** 点击棋盘回调 */
@@ -12,14 +12,14 @@ interface BoardContentProps {
 
 /** 棋盘 */
 interface BoardProps {
+    xIsNext: boolean;
+    /** 存储棋盘的数据 */
+    squares: string[];
     /** 棋盘大小 */
     boardSize: number;
     /** 连线长度 */
     winLength: number;
     /** 是否X，用来判断X或者O */
-    xIsNext: boolean;
-    /** 存储棋盘的数据 */
-    squares: string[];
     /** 父类的更新历史的方法 */
     onPlay: (squares: string[]) => void;
 }
@@ -31,14 +31,14 @@ interface winnerDataType {
 }
 
 interface ChessPieceProps {
-    /** 显示值 */
-    value: string;
-    /** 改变棋盘全局index事件 */
-    onChangeCurrentIdx: (index: number) => void;
-    /** 是否高亮 */
-    highlight: boolean;
     /** 下标 */
     idx: number;
+    /** 显示值 */
+    value: string;
+    /** 是否高亮 */
+    highlight: boolean;
+    /** 改变棋盘全局index事件 */
+    onChangeCurrentIdx: (index: number) => void;
 }
 
 interface InputProps {
@@ -48,9 +48,9 @@ interface InputProps {
     value: string | number;
     /** 标题 */
     label: string | React.ReactElement;
+    /** id用来label绑定input，如果不提供则使用value */
     /** 父类的更新历史的方法 */
     onChange: (params: any) => void;
-    /** id用来label绑定input，如果不提供则使用value */
     id?: string;
     /** 样式 */
     style?: React.CSSProperties;

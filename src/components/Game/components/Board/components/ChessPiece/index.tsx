@@ -4,6 +4,7 @@ import React from 'react';
 /** 定义棋子Square组件 */
 const ChessPiece = React.memo((props: ChessPieceProps) => {
     const { highlight = false, value = '', onChangeCurrentIdx = blockFun, idx } = props;
+    console.warn('ChessPiece渲染');
 
     return (
         <button

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChessPiece } from 'components';
 
 /** 渲染棋盘格子 */
-export default React.memo((props: BoardContentProps) => {
+export default function BoardContent (props: BoardContentProps) {
     const { boardSize, squares, highlightedLine, onSquareClick } = props;
 
     /** 维护棋盘的当前点击的下标 */
@@ -39,4 +39,4 @@ export default React.memo((props: BoardContentProps) => {
     );
 
     return <>{renderChessPiece}</>;
-});
+}
