@@ -18,6 +18,7 @@ export function setHistory (history: Array<Array<string | null>>) {
         payload: history,
     };
 }
+
 /** 设置当前移动步骤 */
 export function setCurrentMove (currentMove: number) {
     return {
@@ -25,6 +26,7 @@ export function setCurrentMove (currentMove: number) {
         payload: currentMove,
     };
 }
+
 /** 设置棋盘大小 */
 export function setBoardSize (boardSize: number) {
     return {
@@ -32,6 +34,7 @@ export function setBoardSize (boardSize: number) {
         payload: boardSize,
     };
 }
+
 /** 设置连线长度 */
 export function setWinLength (winLength: number) {
     return {
@@ -39,6 +42,7 @@ export function setWinLength (winLength: number) {
         payload: winLength,
     };
 }
+
 /** 设置排序 */
 export function setIsAscendinge (isAscending: boolean) {
     return {
@@ -46,6 +50,7 @@ export function setIsAscendinge (isAscending: boolean) {
         payload: isAscending,
     };
 }
+
 /** 设置胜利者 */
 export function setWinner (winner: string) {
     return {
