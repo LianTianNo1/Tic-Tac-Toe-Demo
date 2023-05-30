@@ -28,9 +28,8 @@ class Board extends Component<Board.BoardProps> {
             boardSize,
             winLength,
         });
-        this.props.setHighlightedLine(highlightedLine);
-        if (!winner) return;
         this.props.setWinner(winner as string);
+        this.props.setHighlightedLine(highlightedLine);
     }
 
     /** 更新棋盘历史，棋盘 */
