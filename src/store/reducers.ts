@@ -1,6 +1,13 @@
 import { initialState } from './states';
 import {
-    SET_BOARD_SIZE, SET_CURRENT_MOVE, SET_HIGHLIGHTED_LINE, SET_HISTORY, SET_IS_ASCENDING, SET_WINNER, SET_WIN_LENGTH
+    SET_BOARD_SIZE,
+    SET_CURRENT_IDX,
+    SET_CURRENT_MOVE,
+    SET_HIGHLIGHTED_LINE,
+    SET_HISTORY,
+    SET_IS_ASCENDING,
+    SET_WINNER,
+    SET_WIN_LENGTH
 } from './actions';
 
 /** 定义 reducer */
@@ -40,6 +47,11 @@ export default function reducer (state = initialState, action: MyRedux.ActionTyp
             return {
                 ...state,
                 highlightedLine: action.payload,
+            };
+        case SET_CURRENT_IDX:
+            return {
+                ...state,
+                currentIdx: action.payload,
             };
         default:
             return state;

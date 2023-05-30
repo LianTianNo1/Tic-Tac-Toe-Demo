@@ -8,6 +8,7 @@ export const SET_WIN_LENGTH = 'SET_WIN_LENGTH';
 export const SET_IS_ASCENDING = 'SET_IS_ASCENDING';
 export const SET_WINNER = 'SET_WINNER';
 export const SET_HIGHLIGHTED_LINE = 'SET_HIGHLIGHTED_LINE';
+export const SET_CURRENT_IDX = 'SET_CURRENT_IDX';
 
 
 /** 设置历史 */
@@ -17,7 +18,7 @@ export function setHistory (history: Array<Array<string | null>>) {
         payload: history,
     };
 }
-/** 设置当前移动 */
+/** 设置当前移动步骤 */
 export function setCurrentMove (currentMove: number) {
     return {
         type: SET_CURRENT_MOVE,
@@ -61,3 +62,10 @@ export function setHighlightedLine (highlightedLine: Board.HighlightedLineType) 
     };
 }
 
+/** 设置当前点击的棋子下标 */
+export function setCurrentIdx (currentIdx: Board.CurrentIdxType) {
+    return {
+        type: SET_CURRENT_IDX,
+        payload: currentIdx,
+    };
+}

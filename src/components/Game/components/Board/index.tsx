@@ -57,7 +57,6 @@ class Board extends Component<Board.BoardProps> {
     };
 
     render () {
-        // const { winner, highlightedLine } = this.state;
         const { boardSize, squares, xIsNext, winner, highlightedLine } = this.props;
 
         let status;

@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { ChessPiece } from 'components';
+import { setCurrentIdx } from 'store/actions';
 
 /** 渲染棋盘格子 */
-export default class BoardContent extends Component<Board.BoardContentProps, Board.BoardContentState> {
+class BoardContent extends Component<Board.BoardContentProps, Board.BoardContentState> {
     constructor (props: Board.BoardContentProps) {
         super(props);
-        /** 维护棋盘的当前点击的下标 */
-        this.state = { currentIdx: null };
     }
 
     /** 改变Index */
     handleChangeCurrentIdx = (index: number) => {
-        this.setState({ currentIdx: index });
+        this.props.setCurrentIdx(index);
     };
 
     /** 更新棋盘数据 */
-    componentDidUpdate (prevProps: Board.BoardContentProps, preState: Board.BoardContentState) {
-        const { currentIdx } = this.state;
+    componentDidUpdate (prevProps: Board.BoardContentProps) {
+        const { currentIdx } = this.props;
         const { onSquareClick } = this.props;
 
-        if (currentIdx !== preState.currentIdx) {
+        if (currentIdx !== prevProps.currentIdx) {
             onSquareClick(currentIdx as number);
         }
     }
@@ -49,3 +49,8 @@ export default class BoardContent extends Component<Board.BoardContentProps, Boa
         return <>{this.renderChessPiece()}</>;
     }
 }
+
+export default connect(
+    (state: MyRedux.StateType) => ({ currentIdx: state.currentIdx }),
+    { setCurrentIdx }
+)(BoardContent);

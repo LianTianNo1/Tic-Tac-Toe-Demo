@@ -9,4 +9,5 @@ export const initialState: MyRedux.StateType = {
     isAscending: true,
     winner: '',
     highlightedLine: [],
+    currentIdx: null,
 };

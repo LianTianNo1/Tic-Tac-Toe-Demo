@@ -16,7 +16,7 @@ declare namespace Chess {
 /** 棋盘相关 */
 declare namespace Board {
     /** 棋盘格子 */
-    export interface BoardContentProps {
+    export interface BoardContentProps extends Board.BoardContentState{
     /** 棋盘数据 */
         squares: SquaresType;
         /** 棋盘大小 */
@@ -25,12 +25,13 @@ declare namespace Board {
         highlightedLine: HighlightedLineType;
         /** 点击棋盘回调 */
         onSquareClick: (index: number) => void;
+        setCurrentIdx: (currentIdx: number) => void;
     }
 
     /** 棋盘状态 */
     export interface BoardContentState {
         /** 被点击棋子的下标 */
-        currentIdx: number | null;
+        currentIdx: Board.CurrentIdxType;
     }
 
     /** 棋盘 */
@@ -138,7 +139,7 @@ declare namespace MyRedux {
     }
 
     /** 初始化状态 */
-    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs, Board.winnerDataType{
+    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs, Board.winnerDataType, Board.BoardContentState{
         /** 排序 */
         isAscending: boolean;
     }
