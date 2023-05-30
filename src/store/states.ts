@@ -7,4 +7,6 @@ export const initialState: MyRedux.StateType = {
     boardSize: DEFAULT_BOARD_SIZE,
     winLength: DEFAULT_WIN_LENGTH,
     isAscending: true,
+    winner: '',
+    highlightedLine: [],
 };

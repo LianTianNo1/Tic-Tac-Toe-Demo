@@ -34,7 +34,7 @@ declare namespace Board {
     }
 
     /** 棋盘 */
-    export interface BoardProps {
+    export interface BoardProps extends Board.winnerDataType{
         /** 历史记录 */
         history: Game.HistoryState['history'];
         /** 当前步数 */
@@ -50,6 +50,8 @@ declare namespace Board {
         /** 是否X，用来判断X或者O */
         /** 父类的更新历史的方法 */
         onPlay: (squares: SquaresType) => void;
+        setWinner: (winner: string) => void;
+        setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
     }
 
     /** 棋盘尺寸 胜利条件 */
@@ -136,7 +138,7 @@ declare namespace MyRedux {
     }
 
     /** 初始化状态 */
-    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs{
+    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs, Board.winnerDataType{
         /** 排序 */
         isAscending: boolean;
     }

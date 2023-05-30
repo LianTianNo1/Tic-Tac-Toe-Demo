@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { BoardContent } from 'components';
 import { blockFun, calculateWinner } from 'utils';
+import { setHighlightedLine, setWinner } from 'store/actions';
 
 /** 棋子内容 */
 export const X_SYMBOL = 'X';
 export const O_SYMBOL = 'O';
 
 /** 定义棋盘Board组件 */
-class Board extends Component<Board.BoardProps, Board.winnerDataType> {
+class Board extends Component<Board.BoardProps> {
     constructor (props: Board.BoardProps) {
         super(props);
-        this.state = {
-            winner: '',
-            highlightedLine: [],
-        };
     }
 
     componentDidMount () {
@@ -35,10 +33,8 @@ class Board extends Component<Board.BoardProps, Board.winnerDataType> {
             winLength,
         });
 
-        this.setState({
-            winner: winnerData && winnerData.winner,
-            highlightedLine: winnerData && winnerData.highlightedLine,
-        });
+        this.props.setWinner(winnerData?.winner as string);
+        this.props.setHighlightedLine(winnerData?.highlightedLine as number []);
     }
 
     /** 更新棋盘历史，棋盘 */
@@ -61,8 +57,8 @@ class Board extends Component<Board.BoardProps, Board.winnerDataType> {
     };
 
     render () {
-        const { winner, highlightedLine } = this.state;
-        const { boardSize, squares, xIsNext } = this.props;
+        // const { winner, highlightedLine } = this.state;
+        const { boardSize, squares, xIsNext, winner, highlightedLine } = this.props;
 
         let status;
         if (winner) {
@@ -87,4 +83,13 @@ class Board extends Component<Board.BoardProps, Board.winnerDataType> {
     }
 }
 
-export default Board;
+export default connect(
+    (state: MyRedux.StateType) => ({
+        winner: state.winner,
+        highlightedLine: state.highlightedLine,
+    }),
+    {
+        setWinner,
+        setHighlightedLine,
+    }
+)(Board);
