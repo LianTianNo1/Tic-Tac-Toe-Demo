@@ -29,6 +29,10 @@ declare namespace Board {
 
     /** 棋盘 */
     export interface BoardProps {
+        /** 历史记录 */
+        history: Game.HistoryState['history'];
+        /** 当前步数 */
+        currentMove: Game.HistoryState['currentMove'];
         xIsNext: boolean;
         /** 存储棋盘的数据 */
         squares: SquaresType;
@@ -60,9 +64,9 @@ declare namespace Board {
     /** 连线长度 */
     export type WinLengthType = number;
     /** 胜利者 */
-    export type WinnerType = string;
+    export type WinnerType = string | null;
     /** 高亮路线 */
-    export type HighlightedLineType = number[];
+    export type HighlightedLineType = number[] | null;
     /** 棋盘当前点击的Index */
     export type CurrentIdxType = number | null;
 }

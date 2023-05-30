@@ -90,6 +90,8 @@ export default function Game () {
                         boardSize={boardSize}
                         winLength={winLength}
                         xIsNext={xIsNext}
+                        history={history}
+                        currentMove={currentMove}
                         squares={currentSquares as string []}
                         onPlay={handlePlay}
                     />
