@@ -4,8 +4,14 @@ import { Game } from 'components';
 import store from './store';
 
 /** APP入口 */
-export default function App () {
-    return (<Provider store={store}>
-        <Game />
-    </Provider>);
+class App extends React.Component {
+    render () {
+        return (
+            <Provider store={store}>
+                <Game />
+            </Provider>
+        );
+    }
 }
+
+export default App;
