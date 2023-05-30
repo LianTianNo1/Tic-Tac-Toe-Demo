@@ -130,12 +130,20 @@ declare namespace Game {
         setIsAscendinge: (isAscending: IsAscendingType) => void;
     }
 
+    /** 游戏State */
+    export interface GameState {
+        /** 是否AI */
+        isAI: isAI;
+    }
+
     /** 历史记录 */
     export type HistoryType = Board.SquaresType[];
     /** 当前移动第几步 */
     export type CurrentMoveType = number;
     /** 排序 */
     export type IsAscendingType = boolean;
+    /** 是否AI */
+    export type isAI = boolean;
 }
 
 /** redux相关 */

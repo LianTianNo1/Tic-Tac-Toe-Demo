@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setHistory, setCurrentMove, setWinLength, setBoardSize, setIsAscendinge } from 'store/actions';
@@ -5,15 +6,16 @@ import { Board, Input } from 'components';
 import { calculateRowCol } from 'utils';
 
 /** 默认棋盘大小长度 */
-export const DEFAULT_BOARD_SIZE = 6;
+export const DEFAULT_BOARD_SIZE = 3;
 /** 默认连线长度 */
 export const DEFAULT_WIN_LENGTH = 3;
 /** 默认第0步 */
 export const DEFAULT_CURRENT_MOVE = 0;
 
-class Game extends Component<Game.GameProps> {
+class Game extends Component<Game.GameProps, Game.GameState> {
     constructor (props: Game.GameProps) {
         super(props);
+        this.state = { isAI: false };
     }
 
     /** 棋盘大小改变 */
@@ -57,19 +59,24 @@ class Game extends Component<Game.GameProps> {
         this.props.setIsAscendinge(!isAscending);
     };
 
+    /** 切换AI对局 */
+    toggleAI = () => {
+        const { isAI } = this.state;
+        this.setState({ isAI: !isAI });
+        /** 重置棋盘大小和步数 */
+        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill(null)]);
+        this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+    };
+
     /** 计算 xIsNext */
     private getXIsNext (): boolean {
-        const { currentMove } = this.props;
+        const { currentMove = 0 } = this.props;
         return currentMove % 2 === 0;
     }
 
     render () {
-        const { boardSize, winLength, isAscending } = this.props;
-        const {
-            history,
-            currentMove,
-            currentSquares,
-        } = this.props;
+        const { boardSize, winLength, isAscending, history, currentMove, currentSquares } = this.props;
+        const { isAI } = this.state;
 
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
@@ -110,7 +117,8 @@ class Game extends Component<Game.GameProps> {
 
         return (
             <div className="game">
-                <div className="game-setting">
+                <button onClick={this.toggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
+                {!isAI && <div className="game-setting">
                     <Input
                         type="number"
                         value={boardSize}
@@ -124,7 +132,7 @@ class Game extends Component<Game.GameProps> {
                         onChange={this.handleWinLengthChange}
                         label={`连线长度：当前规则${winLength}子棋`}
                     />
-                </div>
+                </div>}
                 <div className="game-wrap">
                     <div className="game-board">
                         <Board
