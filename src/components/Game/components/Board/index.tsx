@@ -43,7 +43,7 @@ class Board extends Component<Board.BoardProps, Board.winnerDataType> {
 
     /** 更新棋盘历史，棋盘 */
     handleSquareClick = (index: number) => {
-        const { squares, xIsNext, boardSize, winLength, history, currentMove, onPlay = blockFun } = this.props;
+        const { squares, xIsNext, boardSize, winLength, history = [], currentMove = 0, onPlay = blockFun } = this.props;
 
         if (squares[index] || calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(null), { boardSize, winLength })) {
             return;
