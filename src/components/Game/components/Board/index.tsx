@@ -14,10 +14,6 @@ class Board extends Component<Board.BoardProps> {
         super(props);
     }
 
-    componentDidMount () {
-        this.calculateWinnerAndHighlight();
-    }
-
     /** 判断棋盘数据的变化来重新计算 */
     componentDidUpdate (prevProps: Board.BoardProps) {
         if (prevProps.squares !== this.props.squares) {
@@ -28,20 +24,20 @@ class Board extends Component<Board.BoardProps> {
     /** 计算胜利者和高亮路线 */
     calculateWinnerAndHighlight () {
         const { squares, boardSize, winLength, history = [], currentMove = 0 } = this.props;
-        const winnerData = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(null), {
+        const { winner, highlightedLine } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(null), {
             boardSize,
             winLength,
         });
-
-        this.props.setWinner(winnerData?.winner as string);
-        this.props.setHighlightedLine(winnerData?.highlightedLine as number []);
+        if (!winner) return;
+        this.props.setWinner(winner as string);
+        this.props.setHighlightedLine(highlightedLine as number []);
     }
 
     /** 更新棋盘历史，棋盘 */
     handleSquareClick = (index: number) => {
         const { squares, xIsNext, boardSize, winLength, history = [], currentMove = 0, onPlay = blockFun } = this.props;
-
-        if (squares[index] || calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(null), { boardSize, winLength })) {
+        const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(null), { boardSize, winLength });
+        if (squares[index] || winner) {
             return;
         }
 
