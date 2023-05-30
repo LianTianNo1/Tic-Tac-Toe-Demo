@@ -17,7 +17,7 @@ declare namespace Chess {
 declare namespace Board {
     /** 棋盘格子 */
     export interface BoardContentProps extends Board.BoardContentState{
-    /** 棋盘数据 */
+        /** 棋盘数据 */
         squares: SquaresType;
         /** 棋盘大小 */
         boardSize: BoardSizeType;
@@ -25,6 +25,7 @@ declare namespace Board {
         highlightedLine: HighlightedLineType;
         /** 点击棋盘回调 */
         onSquareClick: (index: number) => void;
+        /** 设置当前点击的棋子下标 */
         setCurrentIdx: (currentIdx: number) => void;
     }
 
@@ -37,9 +38,9 @@ declare namespace Board {
     /** 棋盘 */
     export interface BoardProps extends Board.winnerDataType{
         /** 历史记录 */
-        history: Game.HistoryState['history'];
+        history: Game.HistoryType;
         /** 当前步数 */
-        currentMove: Game.HistoryState['currentMove'];
+        currentMove: Game.currentMove;
         /** 下一步是X吗 */
         xIsNext: boolean;
         /** 存储棋盘的数据 */
@@ -48,10 +49,11 @@ declare namespace Board {
         boardSize: BoardSizeType;
         /** 连线长度 */
         winLength: WinLengthType;
-        /** 是否X，用来判断X或者O */
         /** 父类的更新历史的方法 */
         onPlay: (squares: SquaresType) => void;
+        /** 设置胜利者 */
         setWinner: (winner: string) => void;
+        /** 设置高亮线段 */
         setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
     }
 
@@ -88,15 +90,15 @@ declare namespace Board {
 /** 游戏相关 */
 declare namespace Game {
     export interface InputProps {
-    /** input类型 */
+        /** input类型 */
         type: string;
         /** 值 */
         value: string | number;
         /** 标题 */
         label: string | React.ReactElement;
-        /** id用来label绑定input，如果不提供则使用value */
         /** 父类的更新历史的方法 */
         onChange: (params: any) => void;
+        /** id用来label绑定input，如果不提供则使用value */
         id?: string;
         /** 样式 */
         style?: React.CSSProperties;
@@ -112,14 +114,20 @@ declare namespace Game {
 
     /** 游戏Props */
     export interface GameProps extends Game.HistoryState, Board.CalculateWinnerArgs{
-        currentSquares: string[];
+        /** 当前的棋盘数据 */
+        currentSquares: Board.SquaresType;
         /** 排序 */
-        isAscending: boolean;
-        setHistory: (history: string[][]) => void;
-        setCurrentMove: (currentMove: number) => void;
-        setBoardSize: (boardSize: number) => void;
-        setWinLength: (boardwinLengthSize: number) => void;
-        setIsAscendinge: (isAscending: boolean) => void;
+        isAscending: IsAscendingType;
+        /** 设置历史 */
+        setHistory: (history: HistoryType) => void;
+        /** 设置当前移动步骤 */
+        setCurrentMove: (currentMove: CurrentMoveType) => void;
+        /** 设置棋盘大小 */
+        setBoardSize: (boardSize: Board.BoardSizeType) => void;
+        /** 设置连线长度 */
+        setWinLength: (boardwinLengthSize: Board.WinLengthType) => void;
+        /** 设置排序 */
+        setIsAscendinge: (isAscending: IsAscendingType) => void;
     }
 
     /** 历史记录 */

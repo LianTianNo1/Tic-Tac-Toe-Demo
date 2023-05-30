@@ -64,7 +64,7 @@ class Board extends Component<Board.BoardProps> {
         }
 
         return (
-            <React.Fragment>
+            <>
                 <div className="status">{status}</div>
                 <BoardContent
                     boardSize={boardSize}
@@ -72,7 +72,7 @@ class Board extends Component<Board.BoardProps> {
                     highlightedLine={highlightedLine as number []}
                     onSquareClick={this.handleSquareClick}
                 />
-            </React.Fragment>
+            </>
         );
     }
 }
