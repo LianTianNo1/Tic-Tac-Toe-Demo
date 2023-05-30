@@ -27,6 +27,12 @@ declare namespace Board {
         onSquareClick: (index: number) => void;
     }
 
+    /** 棋盘状态 */
+    export interface BoardContentState {
+        /** 被点击棋子的下标 */
+        currentIdx: number | null;
+    }
+
     /** 棋盘 */
     export interface BoardProps {
         /** 历史记录 */
