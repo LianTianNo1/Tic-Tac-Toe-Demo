@@ -39,6 +39,7 @@ declare namespace Board {
         history: Game.HistoryState['history'];
         /** 当前步数 */
         currentMove: Game.HistoryState['currentMove'];
+        /** 下一步是X吗 */
         xIsNext: boolean;
         /** 存储棋盘的数据 */
         squares: SquaresType;
@@ -59,7 +60,9 @@ declare namespace Board {
 
     /** 计算的赢的玩家是谁，赢的路线 */
     export interface winnerDataType {
+        /** 赢的玩家是谁 */
         winner: WinnerType;
+        /** 赢的路线 */
         highlightedLine: HighlightedLineType;
     }
 

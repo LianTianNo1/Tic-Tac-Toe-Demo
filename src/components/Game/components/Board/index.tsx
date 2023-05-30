@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import { BoardContent } from 'components';
 import { blockFun, calculateWinner } from 'utils';
 
+/** 棋子内容 */
+export const X_SYMBOL = 'X';
+export const O_SYMBOL = 'O';
+
 /** 定义棋盘Board组件 */
-export default class Board extends Component<Board.BoardProps, Board.winnerDataType> {
+class Board extends Component<Board.BoardProps, Board.winnerDataType> {
     constructor (props: Board.BoardProps) {
         super(props);
         this.state = {
@@ -48,9 +52,9 @@ export default class Board extends Component<Board.BoardProps, Board.winnerDataT
         const nextSquares = squares.slice();
 
         if (xIsNext) {
-            nextSquares[index] = 'X';
+            nextSquares[index] = X_SYMBOL;
         } else {
-            nextSquares[index] = 'O';
+            nextSquares[index] = O_SYMBOL;
         }
 
         onPlay(nextSquares);
@@ -66,7 +70,7 @@ export default class Board extends Component<Board.BoardProps, Board.winnerDataT
         } else if (Array.from(squares).every((sq) => sq !== null)) {
             status = '平局';
         } else {
-            status = `下一个回合: ${xIsNext ? 'X' : 'O'}`;
+            status = `下一个回合: ${xIsNext ? X_SYMBOL : O_SYMBOL}`;
         }
 
         return (
@@ -82,3 +86,5 @@ export default class Board extends Component<Board.BoardProps, Board.winnerDataT
         );
     }
 }
+
+export default Board;

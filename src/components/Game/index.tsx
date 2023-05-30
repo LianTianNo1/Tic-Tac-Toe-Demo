@@ -77,7 +77,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             currentSquares,
         } = this.props;
 
-        const xIsNext = this.getXIsNext();
+        /** 下一步回合是 X 吗 */
+        const xIsNext: boolean = this.getXIsNext();
 
         /** 渲染历史记录列表 */
         const moves = history.map((record, move) => {
