@@ -1,21 +1,34 @@
+import React, { Component } from 'react';
 import { blockFun } from 'utils';
-import React from 'react';
 
 /** 定义棋子ChessPiece组件 */
-const ChessPiece = React.memo((props: Chess.ChessPieceProps) => {
-    const { highlight = false, value = '', onChangeCurrentIdx = blockFun, idx } = props;
-    console.warn('ChessPiece渲染');
+class ChessPiece extends Component<Chess.ChessPieceProps> {
+    shouldComponentUpdate (nextProps: Chess.ChessPieceProps) {
+        if (
+            nextProps.highlight !== this.props.highlight ||
+            nextProps.value !== this.props.value ||
+            nextProps.idx !== this.props.idx
+        ) {
+            return true;
+        }
+        return false;
+    }
 
-    return (
-        <button
-            className={`square ${highlight ? 'highlight' : ''}`}
-            onClick={ () => {
-                onChangeCurrentIdx(idx);
-            }}
-        >
-            {value}
-        </button>
-    );
-});
+    render () {
+        const { highlight = false, value = '', onChangeCurrentIdx = blockFun, idx } = this.props;
+        console.warn('ChessPiece渲染');
 
-export default ChessPiece;
+        return (
+            <button
+                className={`square ${highlight ? 'highlight' : ''}`}
+                onClick={() => {
+                    onChangeCurrentIdx(idx);
+                }}
+            >
+                {value}
+            </button>
+        );
+    }
+}
+
+export default React.memo(ChessPiece);
