@@ -1,5 +1,5 @@
 import { initialState } from './states';
-import { SET_CURRENT_MOVE, SET_HISTORY } from './actions';
+import { SET_BOARD_SIZE, SET_CURRENT_MOVE, SET_HISTORY, SET_IS_ASCENDING, SET_WIN_LENGTH } from './actions';
 
 /** 定义 reducer */
 export default function reducer (state = initialState, action: MyRedux.ActionType) {
@@ -13,6 +13,21 @@ export default function reducer (state = initialState, action: MyRedux.ActionTyp
             return {
                 ...state,
                 currentMove: action.payload,
+            };
+        case SET_BOARD_SIZE:
+            return {
+                ...state,
+                boardSize: action.payload,
+            };
+        case SET_WIN_LENGTH:
+            return {
+                ...state,
+                winLength: action.payload,
+            };
+        case SET_IS_ASCENDING:
+            return {
+                ...state,
+                isAscending: action.payload,
             };
         default:
             return state;

@@ -54,7 +54,9 @@ declare namespace Board {
 
     /** 棋盘尺寸 胜利条件 */
     export interface CalculateWinnerArgs {
+        /** 棋盘尺寸 */
         boardSize: BoardSizeType;
+        /** 胜利条件 */
         winLength: WinLengthType;
     }
 
@@ -105,17 +107,16 @@ declare namespace Game {
         currentMove: CurrentMoveType;
     }
 
-    /** 游戏状态 */
-    export interface GameState extends Board.CalculateWinnerArgs {
+    /** 游戏Props */
+    export interface GameProps extends Game.HistoryState, Board.CalculateWinnerArgs{
+        currentSquares: string[];
         /** 排序 */
         isAscending: boolean;
-    }
-
-    /** 游戏Props */
-    export interface GameProps extends Game.HistoryState{
-        currentSquares: string[];
         setHistory: (history: string[][]) => void;
         setCurrentMove: (currentMove: number) => void;
+        setBoardSize: (boardSize: number) => void;
+        setWinLength: (boardwinLengthSize: number) => void;
+        setIsAscendinge: (isAscending: boolean) => void;
     }
 
     /** 历史记录 */
@@ -128,9 +129,15 @@ declare namespace Game {
 
 /** redux相关 */
 declare namespace MyRedux {
-/** ActionType */
+    /** ActionType */
     export interface ActionType {
         type: string;
         payload: any;
+    }
+
+    /** 初始化状态 */
+    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs{
+        /** 排序 */
+        isAscending: boolean;
     }
 }

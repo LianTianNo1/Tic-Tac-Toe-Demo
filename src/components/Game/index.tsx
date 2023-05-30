@@ -1,31 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setHistory, setCurrentMove } from 'store/actions';
+import { setHistory, setCurrentMove, setWinLength, setBoardSize, setIsAscendinge } from 'store/actions';
 import { Board, Input } from 'components';
 import { calculateRowCol } from 'utils';
-import { Dispatch } from 'redux';
 
 // 默认棋盘大小长度
 export const DEFAULT_BOARD_SIZE = 6;
 // 默认连线长度
-const DEFAULT_WIN_LENGTH = 3;
+export const DEFAULT_WIN_LENGTH = 3;
 // 默认第0步
 export const DEFAULT_CURRENT_MOVE = 0;
 
-class Game extends Component<Game.GameProps, Game.GameState> {
+class Game extends Component<Game.GameProps> {
     constructor (props: Game.GameProps) {
         super(props);
-        this.state = {
-            boardSize: DEFAULT_BOARD_SIZE,
-            winLength: DEFAULT_WIN_LENGTH,
-            isAscending: true,
-        };
     }
 
     /** 棋盘大小改变 */
     handleBoardSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const size = Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value));
-        this.setState({ boardSize: size });
+        this.props.setBoardSize(size);
         /** 重置棋盘大小和步数 */
         this.props.setHistory([Array(size * size).fill(null)]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
@@ -33,12 +27,12 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     /** 连线长度改变 */
     handleWinLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { boardSize } = this.state;
+        const { boardSize } = this.props;
         const winLength = Math.min(
             Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value)),
             boardSize
         );
-        this.setState({ winLength });
+        this.props.setWinLength(winLength);
     };
 
     /** 更新历史和当前步骤 */
@@ -59,8 +53,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     /** 切换排序 */
     toggleSortOrder = () => {
-        const { isAscending } = this.state;
-        this.setState({ isAscending: !isAscending });
+        const { isAscending } = this.props;
+        this.props.setIsAscendinge(!isAscending);
     };
 
     /** 计算 xIsNext */
@@ -70,7 +64,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     }
 
     render () {
-        const { boardSize, winLength, isAscending } = this.state;
+        const { boardSize, winLength, isAscending } = this.props;
         const {
             history,
             currentMove,
@@ -154,17 +148,21 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         );
     }
 }
-/** 状态映射到props */
-const mapStateToProps = (state: Game.HistoryState) => ({
-    history: state.history,
-    currentMove: state.currentMove,
-    currentSquares: state.history[state.currentMove],
-});
 
-/** 操作映射到props */
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setHistory: (history: string[][]) => dispatch(setHistory(history)),
-    setCurrentMove: (currentMove: number) => dispatch(setCurrentMove(currentMove)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Game);
+export default connect(
+    (state: MyRedux.StateType) => ({
+        history: state.history,
+        currentMove: state.currentMove,
+        currentSquares: state.history[state.currentMove],
+        boardSize: state.boardSize,
+        winLength: state.winLength,
+        isAscending: state.isAscending,
+    }),
+    {
+        setHistory,
+        setCurrentMove,
+        setBoardSize,
+        setWinLength,
+        setIsAscendinge,
+    }
+)(Game);
