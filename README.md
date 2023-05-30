@@ -1,21 +1,39 @@
-#入职任务
-实现一个井字棋游戏，可参考 https://zh-hans.reactjs.org/learn/tutorial-tic-tac-toe# 要求如下：
+# 入职任务
 
-课后扩展
-For the current move only, show “You are at move #…” instead of a button.
+## 基础任务
 
-Rewrite Board to use two loops to make the squares instead of hardcoding them.
+>  实现一个井字棋游戏，可参考 https://zh-hans.reactjs.org/learn/tutorial-tic-tac-toe# 要求如下：
 
-Add a toggle button that lets you sort the moves in either ascending or descending order.
+## 课后扩展
 
-When someone wins, highlight the three squares that caused the win (and when no one wins, display a message about the result being a draw).
+- 仅对于当前移动，显示“你在移动#…”而不是按钮。
 
-Display the location for each move in the format (row, col) in the move history list.
+- 重写棋盘，使用两个循环来制作正方形，而不是硬编码它们。
 
-额外：
+- 添加一个切换按钮，使您可以按升序或降序对移动进行排序。
 
-1. 游戏可配置，支持快速拓展为五子棋（5 子）等等
-2. 胜利逻辑使用逻辑运算，而非示例中穷举
-3. 拆分组件
-4. 使用项目统一 Eslint 规则（npm 全局安装 ezeslint 包，然后在项目目录下直接执行 ezeslint ，选择对应选项即可）
-5. 使用 typescript
+- 当有人获胜时，突出显示导致获胜的三个方块(当没有人获胜时，显示结果为平局的消息)。
+
+- 在移动历史列表中以格式(行，col)显示每次移动的位置。
+
+
+## 额外：
+
+- 游戏可配置，支持快速拓展为五子棋（N 子）等等
+- 胜利逻辑使用逻辑运算，而非示例中穷举
+- 拆分组件
+- 使用项目统一 Eslint 规则（npm 全局安装 ezeslint 包，然后在项目目录下直接执行 ezeslint ，选择对应选项即可）
+- 使用 typescript
+
+## codereview后任务：
+
+- 使用redux代替原有的历史记录state
+- 优化棋子的渲染
+- 集中管理 interface、type
+- 组件命名
+- 重写判断胜利的算法
+
+## 后续：
+
+- 原有函数组件改为class组件
+- 使用redux代替原有的state

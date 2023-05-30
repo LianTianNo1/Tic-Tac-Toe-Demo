@@ -4,11 +4,11 @@ import { setHistory, setCurrentMove, setWinLength, setBoardSize, setIsAscendinge
 import { Board, Input } from 'components';
 import { calculateRowCol } from 'utils';
 
-// 默认棋盘大小长度
+/** 默认棋盘大小长度 */
 export const DEFAULT_BOARD_SIZE = 6;
-// 默认连线长度
+/** 默认连线长度 */
 export const DEFAULT_WIN_LENGTH = 3;
-// 默认第0步
+/** 默认第0步 */
 export const DEFAULT_CURRENT_MOVE = 0;
 
 class Game extends Component<Game.GameProps> {

@@ -11,7 +11,7 @@ import {
 } from './actions';
 
 /** 定义 reducer */
-export default function reducer (state = initialState, action: MyRedux.ActionType) {
+export default function reducer (state: MyRedux.StateType = initialState, action: MyRedux.ActionType) {
     switch (action.type) {
         case SET_HISTORY:
             return {
