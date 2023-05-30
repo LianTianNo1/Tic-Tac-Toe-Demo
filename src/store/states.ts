@@ -1,4 +1,4 @@
-import { DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE } from 'hooks/useGameBoardRule';
+import { DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE } from 'components/Game';
 
 // 定义初始 state
 export const initialState: Game.HistoryState = {

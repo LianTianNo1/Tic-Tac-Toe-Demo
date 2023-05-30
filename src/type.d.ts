@@ -90,8 +90,23 @@ declare namespace Game {
 
     /** 历史记录 */
     export interface HistoryState {
-        history: Array<Array<string | null>>;
-        currentMove: number;
+        /** 历史记录 */
+        history: HistoryType;
+        /** 当前步数 */
+        currentMove: CurrentMoveType;
+    }
+
+    /** 游戏状态 */
+    export interface GameState extends Board.CalculateWinnerArgs {
+        /** 排序 */
+        isAscending: boolean;
+    }
+
+    /** 游戏Props */
+    export interface GameProps extends Game.HistoryState{
+        currentSquares: string[];
+        setHistory: (history: string[][]) => void;
+        setCurrentMove: (currentMove: number) => void;
     }
 
     /** 历史记录 */
