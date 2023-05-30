@@ -1,9 +1,11 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setHistory, setCurrentMove, setWinLength, setBoardSize, setIsAscendinge } from 'store/actions';
 import { Board, Input } from 'components';
-import { calculateRowCol } from 'utils';
+import { calculateRowCol, calculateWinner } from 'utils';
+import { O_SYMBOL, X_SYMBOL } from './components/Board';
 
 /** 默认棋盘大小长度 */
 export const DEFAULT_BOARD_SIZE = 3;
@@ -23,7 +25,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const size = Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value));
         this.props.setBoardSize(size);
         /** 重置棋盘大小和步数 */
-        this.props.setHistory([Array(size * size).fill(null)]);
+        this.props.setHistory([Array(size * size).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
     };
 
@@ -37,8 +39,66 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setWinLength(winLength);
     };
 
+    handleAIMove = () => {
+        const { currentSquares, boardSize, winLength, currentMove, history } = this.props;
+        const squares = currentSquares.slice();
+        const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
+            if (square === '') {
+                acc.push(index);
+            }
+            return acc;
+        }, []);
+
+        // 判断当前是X还是O
+        const currentPlayer = this.getXIsNext() ? X_SYMBOL : O_SYMBOL;
+
+        // 尝试每一个空格
+        for (const index of emptySquares) {
+            // 模拟落子
+            squares[index] = currentPlayer;
+            // 判断是否获胜
+            const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+                boardSize,
+                winLength,
+            });
+            // 如果AI获胜了，直接返回
+            if (winner === currentPlayer) {
+                this.handlePlay(squares);
+                return;
+            }
+            // 清空模拟的落子
+            squares[index] = '';
+        }
+
+        // 尝试对手的每一个空格
+        for (const index of emptySquares) {
+            // 模拟对手的落子
+            squares[index] = currentPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
+            // 判断对手是否获胜
+            const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+                boardSize,
+                winLength,
+            });
+            // 如果对手获胜了，直接阻止对手获胜的落子
+            if (winner === (currentPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL)) {
+                squares[index] = currentPlayer;
+                this.handlePlay(squares);
+                return;
+            }
+            // 清空模拟的落子
+            squares[index] = '';
+        }
+
+        // 随机选择一个空格落子
+        const randomIndex = Math.floor(Math.random() * emptySquares.length);
+        const randomSquare = emptySquares[randomIndex];
+        squares[randomSquare] = currentPlayer;
+        this.handlePlay(squares);
+    };
+
     /** 更新历史和当前步骤 */
     handlePlay = (nextSquares: Board.SquaresType) => {
+        // debugger;
         const { history, currentMove } = this.props;
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
@@ -46,6 +106,14 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         ];
         this.props.setHistory(nextHistory);
         this.props.setCurrentMove(nextHistory.length - 1);
+        // 如果开启了AI对局且当前不是AI回合，则触发AI落子
+        const isAIStep = this.getXIsNext();
+        console.log('是否AI下棋', isAIStep);
+        if (this.state.isAI && isAIStep) {
+            this.handleAIMove();
+        }
+        // this.props.setHistory(nextHistory);
+        // this.props.setCurrentMove(nextHistory.length - 1);
     };
 
     /** 跳转步骤 */
@@ -64,7 +132,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const { isAI } = this.state;
         this.setState({ isAI: !isAI });
         /** 重置棋盘大小和步数 */
-        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill(null)]);
+        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
     };
 

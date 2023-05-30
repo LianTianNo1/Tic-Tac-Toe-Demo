@@ -1,4 +1,3 @@
-/*  eslint-disable no-console */
 import React, { Component } from 'react';
 import { blockFun } from 'utils';
 
@@ -17,7 +16,6 @@ class ChessPiece extends Component<Chess.ChessPieceProps> {
 
     render () {
         const { highlight = false, value = '', onChangeCurrentIdx = blockFun, idx } = this.props;
-        console.log('ChessPiece渲染');
 
         return (
             <button
