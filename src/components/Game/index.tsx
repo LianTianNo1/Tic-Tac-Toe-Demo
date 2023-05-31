@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -47,7 +46,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** AI移动 */
     handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst  = false) => {
         const { boardSize, winLength } = this.props;
-        console.log('nextSquares', nextSquares, 'currentMove', currentMove, 'history', nextHistory);
+        // console.log('nextSquares', nextSquares, 'currentMove', currentMove, 'history', nextHistory);
         const squares = nextSquares.slice();
         const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
             if (square === '') {
@@ -97,14 +96,11 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const randomIndex = Math.floor(Math.random() * emptySquares.length);
         const randomSquare = emptySquares[randomIndex];
         squares[randomSquare] = AIPlayer;
-        console.log('临时squares', squares,);
         this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
     };
 
     /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
     handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType, isAIFirst: Game.isAIFirst  = false) => {
-        // debugger;
-        // const { history, currentMove } = this.props;
         const { isAI } = this.state;
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
@@ -119,10 +115,9 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
         // AI 是如果先手默认是X 后手默认是 O
         const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
-        console.log('让我看看现在的AI棋子', AIPlayer);
         // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
         const isAIStep = currentPlayer === AIPlayer;
-        console.log('是否AI对局', isAI, '是否AI轮到下棋', isAIStep, '当前移动步数', currentMove + 1, '当前玩家', currentPlayer, 'AI棋子', AIPlayer);
+        // console.log('是否AI对局', isAI, '是否AI轮到下棋', isAIStep, '当前移动步数', currentMove + 1, '当前玩家', currentPlayer, 'AI棋子', AIPlayer);
         if (isAI && isAIStep) {
             this.handleAIMove(nextSquares, nextHistory, nextHistory.length - 1, AIPlayer, isAIFirst);
         }
@@ -166,7 +161,6 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         if (isAI && _isAIFirst) {
             const _squares = Array(boardSize * boardSize).fill('');
             this.handleAIMove(_squares, [_squares], DEFAULT_CURRENT_MOVE, AIPlayer, _isAIFirst);
-            console.log('先手了');
         }
     };
 
@@ -249,12 +243,15 @@ class Game extends Component<Game.GameProps, Game.GameState> {
                             onPlay={this.handlePlay}
                         />
                     </div>
-                    <div className="game-info">
-                        <button onClick={this.toggleSortOrder}>
-                            {isAscending ? '正序' : '倒序'}
-                        </button>
-                        <ol className="record-list">{sortedMoves}</ol>
-                    </div>
+                    {
+                        !isAI && <div className="game-info">
+                            <button onClick={this.toggleSortOrder}>
+                                {isAscending ? '正序' : '倒序'}
+                            </button>
+                            <ol className="record-list">{sortedMoves}</ol>
+                        </div>
+                    }
+
                 </div>
             </div>
         );
