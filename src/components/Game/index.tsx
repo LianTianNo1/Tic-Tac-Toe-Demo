@@ -56,7 +56,13 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** AI移动 */
     handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst  = false) => {
         const { boardSize, winLength } = this.props;
+        /** 当前棋盘数据 */
         const squares = nextSquares.slice();
+        /** 上次棋盘数据 */
+        const preSquares = (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill('');
+        /** 人类玩家棋子 */
+        const HumanPlayer = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
+        /** 空位 */
         const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
             if (square === '') {
                 acc.push(index);
@@ -80,7 +86,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             // 模拟落子
             squares[index] = AIPlayer;
             // 判断是否获胜
-            const { winner } = calculateWinner(squares, (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+            const { winner } = calculateWinner(squares,  preSquares, {
                 boardSize,
                 winLength,
             });
@@ -96,14 +102,14 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         // 尝试对手的每一个空格
         for (const index of emptySquares) {
             // 模拟对手的落子
-            squares[index] = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
+            squares[index] = HumanPlayer;
             // 判断对手是否获胜
-            const { winner } = calculateWinner(squares, (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+            const { winner } = calculateWinner(squares, preSquares, {
                 boardSize,
                 winLength,
             });
             // 如果对手获胜了，直接阻止对手获胜的落子
-            if (winner === (AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL)) {
+            if (winner === HumanPlayer) {
                 squares[index] = AIPlayer;
                 this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
                 return;
