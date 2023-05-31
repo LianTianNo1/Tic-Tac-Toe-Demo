@@ -53,10 +53,6 @@ declare namespace Board {
         winLength: WinLengthType;
         /** 父类的更新历史的方法 */
         onPlay: (squares: SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType,  isAIFirst: Game.isAIFirst) => void;
-        /** 设置胜利者 */
-        setWinner: (winner: string) => void;
-        /** 设置高亮线段 */
-        setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
     }
 
     /** 棋盘尺寸 胜利条件 */

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BoardContent } from 'components';
 import { blockFun, calculateWinner } from 'utils';
-import { setHighlightedLine, setWinner } from 'store/actions';
 
 /** 棋子内容 */
 export const X_SYMBOL = 'X';
@@ -60,13 +59,7 @@ class Board extends Component<Board.BoardProps> {
     }
 }
 
-export default connect(
-    (state: MyRedux.StateType) => ({
-        winner: state.winner,
-        highlightedLine: state.highlightedLine,
-    }),
-    {
-        setWinner,
-        setHighlightedLine,
-    }
-)(Board);
+export default connect((state: MyRedux.StateType) => ({
+    winner: state.winner,
+    highlightedLine: state.highlightedLine,
+}))(Board);

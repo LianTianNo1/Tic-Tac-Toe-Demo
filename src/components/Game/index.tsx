@@ -39,6 +39,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         /** 重置棋盘大小和步数 */
         this.props.setHistory([Array(size * size).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+        this.props.setWinner('');
+        this.props.setHighlightedLine([]);
     };
 
     /** 连线长度改变 */
@@ -54,7 +56,6 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** AI移动 */
     handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst  = false) => {
         const { boardSize, winLength } = this.props;
-        // console.log('nextSquares', nextSquares, 'currentMove', currentMove, 'history', nextHistory);
         const squares = nextSquares.slice();
         const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
             if (square === '') {
