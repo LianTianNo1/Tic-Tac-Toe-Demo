@@ -37,6 +37,8 @@ declare namespace Board {
 
     /** 棋盘 */
     export interface BoardProps extends Board.winnerDataType{
+        /** 是否是AI先手 */
+        isAIFirst: Game.isAIFirst;
         /** 历史记录 */
         history: Game.HistoryType;
         /** 当前步数 */
@@ -50,7 +52,7 @@ declare namespace Board {
         /** 连线长度 */
         winLength: WinLengthType;
         /** 父类的更新历史的方法 */
-        onPlay: (squares: SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType) => void;
+        onPlay: (squares: SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType,  isAIFirst: Game.isAIFirst) => void;
         /** 设置胜利者 */
         setWinner: (winner: string) => void;
         /** 设置高亮线段 */

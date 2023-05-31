@@ -45,7 +45,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     };
 
     /** AI移动 */
-    handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string) => {
+    handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst  = false) => {
         const { boardSize, winLength } = this.props;
         console.log('nextSquares', nextSquares, 'currentMove', currentMove, 'history', nextHistory);
         const squares = nextSquares.slice();
@@ -67,7 +67,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             });
             // 如果AI获胜了，直接返回
             if (winner === AIPlayer) {
-                this.handlePlay(squares, nextHistory, currentMove);
+                this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
                 return;
             }
             // 清空模拟的落子
@@ -86,7 +86,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             // 如果对手获胜了，直接阻止对手获胜的落子
             if (winner === (AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL)) {
                 squares[index] = AIPlayer;
-                this.handlePlay(squares, nextHistory, currentMove);
+                this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
                 return;
             }
             // 清空模拟的落子
@@ -98,14 +98,14 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const randomSquare = emptySquares[randomIndex];
         squares[randomSquare] = AIPlayer;
         console.log('临时squares', squares,);
-        this.handlePlay(squares, nextHistory, currentMove);
+        this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
     };
 
     /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
-    handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType) => {
+    handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType, isAIFirst: Game.isAIFirst  = false) => {
         // debugger;
         // const { history, currentMove } = this.props;
-        const { isAI, isAIFirst } = this.state;
+        const { isAI } = this.state;
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
             nextSquares,
@@ -119,11 +119,12 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
         // AI 是如果先手默认是X 后手默认是 O
         const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        console.log('让我看看现在的AI棋子', AIPlayer);
         // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
         const isAIStep = currentPlayer === AIPlayer;
         console.log('是否AI对局', isAI, '是否AI轮到下棋', isAIStep, '当前移动步数', currentMove + 1, '当前玩家', currentPlayer, 'AI棋子', AIPlayer);
         if (isAI && isAIStep) {
-            this.handleAIMove(nextSquares, nextHistory, nextHistory.length - 1, AIPlayer);
+            this.handleAIMove(nextSquares, nextHistory, nextHistory.length - 1, AIPlayer, isAIFirst);
         }
     };
 
@@ -160,11 +161,11 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
         // AI 是如果先手默认是X 后手默认是 O
-        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        const AIPlayer = _isAIFirst ? X_SYMBOL : O_SYMBOL;
         /** 如果AI对局并且AI先手 */
         if (isAI && _isAIFirst) {
             const _squares = Array(boardSize * boardSize).fill('');
-            this.handleAIMove(_squares, [_squares], DEFAULT_CURRENT_MOVE, AIPlayer);
+            this.handleAIMove(_squares, [_squares], DEFAULT_CURRENT_MOVE, AIPlayer, _isAIFirst);
             console.log('先手了');
         }
     };
@@ -238,6 +239,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
                 <div className="game-wrap">
                     <div className="game-board">
                         <Board
+                            isAIFirst={isAIFirst}
                             boardSize={boardSize}
                             winLength={winLength}
                             xIsNext={xIsNext}
