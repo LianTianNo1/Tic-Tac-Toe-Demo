@@ -64,7 +64,11 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         }, []);
 
         // 只针对井字棋后手第一步先判断中心有没有人下，没有的话就不乱下，先下中心
-        if (emptySquares.length === nextSquares.length - 1 && nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE && !nextSquares[4]) {
+        if (
+            (emptySquares.length === nextSquares.length - 1 ||  emptySquares.length === nextSquares.length) &&
+            nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE &&
+            !nextSquares[4]
+        ) {
             squares[4] = AIPlayer;
             this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
             return;
