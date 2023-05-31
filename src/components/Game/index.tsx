@@ -156,6 +156,14 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     /** 跳转步骤 */
     jumpTo = (nextMove: number) => {
+        const { history, winLength, boardSize } = this.props;
+        /** 计算胜利者 */
+        const preSquares = (history as string [][])[nextMove - 1] || Array(boardSize * boardSize).fill('');
+        const squares = (history as string [][])[nextMove];
+        const { winner, highlightedLine } = calculateWinner(squares, preSquares, { boardSize, winLength });
+        this.props.setWinner(winner as string);
+        this.props.setHighlightedLine(highlightedLine);
+        // 设置当前移动的步数
         this.props.setCurrentMove(nextMove);
     };
 
