@@ -63,6 +63,13 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             return acc;
         }, []);
 
+        // 只针对井字棋后手第一步先判断中心有没有人下，没有的话就不乱下，先下中心
+        if (emptySquares.length === nextSquares.length - 1 && nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE && !nextSquares[4]) {
+            squares[4] = AIPlayer;
+            this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+            return;
+        }
+
         // 尝试每一个空格
         for (const index of emptySquares) {
             // 模拟落子
@@ -120,11 +127,10 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setHistory(nextHistory);
         // 设置当前移动步骤
         this.props.setCurrentMove(nextHistory.length - 1);
+
+        /** 计算胜利者 */
         const preSquares = (history as string [][])[currentMove] || Array(nextSquares.length).fill('');
         const { winner, highlightedLine } = calculateWinner(nextSquares, preSquares, { boardSize, winLength });
-        console.log('上个棋盘数据', preSquares);
-        console.log('看看棋盘数据', nextSquares);
-        console.log('看看有没有胜利者', winner);
         if (winner) {
             this.props.setWinner(winner as string);
             this.props.setHighlightedLine(highlightedLine);
