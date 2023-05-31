@@ -17,7 +17,12 @@ export const DEFAULT_CURRENT_MOVE = 0;
 class Game extends Component<Game.GameProps, Game.GameState> {
     constructor (props: Game.GameProps) {
         super(props);
-        this.state = { isAI: false };
+        this.state = {
+            /** 是否开启AI对局 */
+            isAI: false,
+            /** AI是否先手, 默认后手 */
+            isAIFirst: false,
+        };
     }
 
     /** 棋盘大小改变 */
@@ -39,9 +44,11 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setWinLength(winLength);
     };
 
-    handleAIMove = () => {
-        const { currentSquares, boardSize, winLength, currentMove, history } = this.props;
-        const squares = currentSquares.slice();
+    /** AI移动 */
+    handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string) => {
+        const { boardSize, winLength } = this.props;
+        console.log('nextSquares', nextSquares, 'currentMove', currentMove, 'history', nextHistory);
+        const squares = nextSquares.slice();
         const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
             if (square === '') {
                 acc.push(index);
@@ -49,21 +56,18 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             return acc;
         }, []);
 
-        // 判断当前是X还是O
-        const currentPlayer = this.getXIsNext() ? X_SYMBOL : O_SYMBOL;
-
         // 尝试每一个空格
         for (const index of emptySquares) {
             // 模拟落子
-            squares[index] = currentPlayer;
+            squares[index] = AIPlayer;
             // 判断是否获胜
-            const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+            const { winner } = calculateWinner(squares, (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
                 boardSize,
                 winLength,
             });
             // 如果AI获胜了，直接返回
-            if (winner === currentPlayer) {
-                this.handlePlay(squares);
+            if (winner === AIPlayer) {
+                this.handlePlay(squares, nextHistory, currentMove);
                 return;
             }
             // 清空模拟的落子
@@ -73,16 +77,16 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         // 尝试对手的每一个空格
         for (const index of emptySquares) {
             // 模拟对手的落子
-            squares[index] = currentPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
+            squares[index] = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
             // 判断对手是否获胜
-            const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
+            const { winner } = calculateWinner(squares, (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
                 boardSize,
                 winLength,
             });
             // 如果对手获胜了，直接阻止对手获胜的落子
-            if (winner === (currentPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL)) {
-                squares[index] = currentPlayer;
-                this.handlePlay(squares);
+            if (winner === (AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL)) {
+                squares[index] = AIPlayer;
+                this.handlePlay(squares, nextHistory, currentMove);
                 return;
             }
             // 清空模拟的落子
@@ -92,28 +96,35 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         // 随机选择一个空格落子
         const randomIndex = Math.floor(Math.random() * emptySquares.length);
         const randomSquare = emptySquares[randomIndex];
-        squares[randomSquare] = currentPlayer;
-        this.handlePlay(squares);
+        squares[randomSquare] = AIPlayer;
+        console.log('临时squares', squares,);
+        this.handlePlay(squares, nextHistory, currentMove);
     };
 
-    /** 更新历史和当前步骤 */
-    handlePlay = (nextSquares: Board.SquaresType) => {
+    /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
+    handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType) => {
         // debugger;
-        const { history, currentMove } = this.props;
+        // const { history, currentMove } = this.props;
+        const { isAI, isAIFirst } = this.state;
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
             nextSquares,
         ];
+        // 设置历史
         this.props.setHistory(nextHistory);
+        // 设置当前移动步骤
         this.props.setCurrentMove(nextHistory.length - 1);
-        // 如果开启了AI对局且当前不是AI回合，则触发AI落子
-        const isAIStep = this.getXIsNext();
-        console.log('是否AI下棋', isAIStep);
-        if (this.state.isAI && isAIStep) {
-            this.handleAIMove();
+
+        // 判断下一个玩家是X还是O
+        const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+        // AI 是如果先手默认是X 后手默认是 O
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
+        const isAIStep = currentPlayer === AIPlayer;
+        console.log('是否AI对局', isAI, '是否AI轮到下棋', isAIStep, '当前移动步数', currentMove + 1, '当前玩家', currentPlayer, 'AI棋子', AIPlayer);
+        if (isAI && isAIStep) {
+            this.handleAIMove(nextSquares, nextHistory, nextHistory.length - 1, AIPlayer);
         }
-        // this.props.setHistory(nextHistory);
-        // this.props.setCurrentMove(nextHistory.length - 1);
     };
 
     /** 跳转步骤 */
@@ -130,10 +141,32 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** 切换AI对局 */
     toggleAI = () => {
         const { isAI } = this.state;
-        this.setState({ isAI: !isAI });
+        const _isAI = !isAI;
+        this.setState({ isAI: _isAI });
+        // 当前关闭AI战局，关闭AI先手
+        if (!_isAI) this.setState({ isAIFirst: false });
         /** 重置棋盘大小和步数 */
         this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+    };
+
+    /** 切换AI对局 */
+    toggleAIFirst = () => {
+        const { isAIFirst, isAI } = this.state;
+        const { boardSize } = this.props;
+        const _isAIFirst = !isAIFirst;
+        this.setState({ isAIFirst: _isAIFirst });
+        /** 重置棋盘大小和步数 */
+        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
+        this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+        // AI 是如果先手默认是X 后手默认是 O
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        /** 如果AI对局并且AI先手 */
+        if (isAI && _isAIFirst) {
+            const _squares = Array(boardSize * boardSize).fill('');
+            this.handleAIMove(_squares, [_squares], DEFAULT_CURRENT_MOVE, AIPlayer);
+            console.log('先手了');
+        }
     };
 
     /** 计算 xIsNext */
@@ -144,7 +177,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     render () {
         const { boardSize, winLength, isAscending, history, currentMove, currentSquares } = this.props;
-        const { isAI } = this.state;
+        const { isAI, isAIFirst } = this.state;
 
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
@@ -186,6 +219,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         return (
             <div className="game">
                 <button onClick={this.toggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
+                {isAI && <button onClick={this.toggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>}
                 {!isAI && <div className="game-setting">
                     <Input
                         type="number"

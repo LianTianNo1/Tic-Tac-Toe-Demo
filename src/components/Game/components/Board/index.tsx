@@ -48,7 +48,7 @@ class Board extends Component<Board.BoardProps> {
             nextSquares[index] = O_SYMBOL;
         }
 
-        onPlay(nextSquares);
+        onPlay(nextSquares, history, currentMove);
     };
 
     render () {
@@ -57,7 +57,7 @@ class Board extends Component<Board.BoardProps> {
         let status;
         if (winner) {
             status = `恭喜 ${winner} 赢得了本局比赛！！！`;
-        } else if (Array.from(squares).every((sq) => sq !== null)) {
+        } else if (Array.from(squares).every((sq) => sq !== '')) {
             status = '平局';
         } else {
             status = `下一个回合: ${xIsNext ? X_SYMBOL : O_SYMBOL}`;

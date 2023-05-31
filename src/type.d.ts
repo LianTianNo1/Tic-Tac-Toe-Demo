@@ -50,7 +50,7 @@ declare namespace Board {
         /** 连线长度 */
         winLength: WinLengthType;
         /** 父类的更新历史的方法 */
-        onPlay: (squares: SquaresType) => void;
+        onPlay: (squares: SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType) => void;
         /** 设置胜利者 */
         setWinner: (winner: string) => void;
         /** 设置高亮线段 */
@@ -134,6 +134,8 @@ declare namespace Game {
     export interface GameState {
         /** 是否AI */
         isAI: isAI;
+        /** AI是否先手 */
+        isAIFirst: isAIFirst;
     }
 
     /** 历史记录 */
@@ -144,6 +146,8 @@ declare namespace Game {
     export type IsAscendingType = boolean;
     /** 是否AI */
     export type isAI = boolean;
+    /** 是否AI先手 */
+    export type isAIFirst = boolean;
 }
 
 /** redux相关 */
