@@ -149,3 +149,11 @@ body {
     margin-bottom: 20px;
     background: #F8F9FC
 }
+
+.open-ai-btn{
+    margin: 0 20px;
+}
+
+.chess-piece-tip {
+    font-size: 12px;
+}

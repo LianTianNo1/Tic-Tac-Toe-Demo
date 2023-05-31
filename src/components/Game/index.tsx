@@ -143,7 +143,13 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const preSquares = (history as string [][])[currentMove] || Array(nextSquares.length).fill('');
         const { winner, highlightedLine } = calculateWinner(nextSquares, preSquares, { boardSize, winLength });
         if (winner) {
-            this.props.setWinner(winner as string);
+            let _winner = '';
+            if (isAI) {
+                _winner = winner === (isAIFirst ? X_SYMBOL : O_SYMBOL) ? 'AI' : '你';
+            } else {
+                _winner = winner;
+            }
+            this.props.setWinner(_winner);
             this.props.setHighlightedLine(highlightedLine);
             return;
         }
@@ -167,7 +173,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const preSquares = (history as string [][])[nextMove - 1] || Array(boardSize * boardSize).fill('');
         const squares = (history as string [][])[nextMove];
         const { winner, highlightedLine } = calculateWinner(squares, preSquares, { boardSize, winLength });
-        this.props.setWinner(winner as string);
+        this.props.setWinner(winner);
         this.props.setHighlightedLine(highlightedLine);
         // 设置当前移动的步数
         this.props.setCurrentMove(nextMove);
@@ -266,7 +272,13 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         return (
             <div className="game">
                 <button onClick={this.toggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
-                {isAI && <button onClick={this.toggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>}
+                {isAI && (<>
+                    <button className='open-ai-btn' onClick={this.toggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>
+                    <div className='chess-piece-tip'>
+                    当前AI棋子为 {isAIFirst ? X_SYMBOL : O_SYMBOL}
+                    </div>
+                </>)}
+
                 {!isAI && <div className="game-setting">
                     <Input
                         type="number"
