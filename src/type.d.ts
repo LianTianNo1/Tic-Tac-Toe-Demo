@@ -130,6 +130,10 @@ declare namespace Game {
         setWinLength: (boardwinLengthSize: Board.WinLengthType) => void;
         /** 设置排序 */
         setIsAscendinge: (isAscending: IsAscendingType) => void;
+        /** 设置胜利者 */
+        setWinner: (winner: string) => void;
+        /** 设置高亮线段 */
+        setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
     }
 
     /** 游戏State */

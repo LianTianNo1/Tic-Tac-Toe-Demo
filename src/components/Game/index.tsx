@@ -1,7 +1,15 @@
 /* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setHistory, setCurrentMove, setWinLength, setBoardSize, setIsAscendinge } from 'store/actions';
+import {
+    setHistory,
+    setCurrentMove,
+    setWinLength,
+    setBoardSize,
+    setIsAscendinge,
+    setWinner,
+    setHighlightedLine,
+} from 'store/actions';
 import { Board, Input } from 'components';
 import { calculateRowCol, calculateWinner } from 'utils';
 import { O_SYMBOL, X_SYMBOL } from './components/Board';
@@ -102,6 +110,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
     handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType, isAIFirst: Game.isAIFirst  = false) => {
         const { isAI } = this.state;
+        const { boardSize, winLength } = this.props;
+
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
             nextSquares,
@@ -110,6 +120,16 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setHistory(nextHistory);
         // 设置当前移动步骤
         this.props.setCurrentMove(nextHistory.length - 1);
+        const preSquares = (history as string [][])[currentMove] || Array(nextSquares.length).fill('');
+        const { winner, highlightedLine } = calculateWinner(nextSquares, preSquares, { boardSize, winLength });
+        console.log('上个棋盘数据', preSquares);
+        console.log('看看棋盘数据', nextSquares);
+        console.log('看看有没有胜利者', winner);
+        if (winner) {
+            this.props.setWinner(winner as string);
+            this.props.setHighlightedLine(highlightedLine);
+            return;
+        }
 
         // 判断下一个玩家是X还是O
         const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
@@ -134,6 +154,16 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setIsAscendinge(!isAscending);
     };
 
+    /** 重置状态 */
+    resetState = () => {
+        /** 重置棋盘大小|步数|赢家|高亮路线|棋盘大小 */
+        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
+        this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+        this.props.setWinner('');
+        this.props.setHighlightedLine([]);
+        this.props.setBoardSize(DEFAULT_BOARD_SIZE);
+    };
+
     /** 切换AI对局 */
     toggleAI = () => {
         const { isAI } = this.state;
@@ -141,9 +171,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.setState({ isAI: _isAI });
         // 当前关闭AI战局，关闭AI先手
         if (!_isAI) this.setState({ isAIFirst: false });
-        /** 重置棋盘大小和步数 */
-        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
-        this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+        this.resetState();
     };
 
     /** 切换AI对局 */
@@ -152,9 +180,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const { boardSize } = this.props;
         const _isAIFirst = !isAIFirst;
         this.setState({ isAIFirst: _isAIFirst });
-        /** 重置棋盘大小和步数 */
-        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
-        this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
+        this.resetState();
+
         // AI 是如果先手默认是X 后手默认是 O
         const AIPlayer = _isAIFirst ? X_SYMBOL : O_SYMBOL;
         /** 如果AI对局并且AI先手 */
@@ -266,6 +293,8 @@ export default connect(
         boardSize: state.boardSize,
         winLength: state.winLength,
         isAscending: state.isAscending,
+        winner: state.winner,
+        highlightedLine: state.highlightedLine,
     }),
     {
         setHistory,
@@ -273,5 +302,7 @@ export default connect(
         setBoardSize,
         setWinLength,
         setIsAscendinge,
+        setWinner,
+        setHighlightedLine,
     }
 )(Game);

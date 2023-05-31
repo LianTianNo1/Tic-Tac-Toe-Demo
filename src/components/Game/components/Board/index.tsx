@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BoardContent } from 'components';
@@ -12,24 +13,6 @@ export const O_SYMBOL = 'O';
 class Board extends Component<Board.BoardProps> {
     constructor (props: Board.BoardProps) {
         super(props);
-    }
-
-    /** 判断棋盘数据的变化来重新计算 */
-    componentDidUpdate (prevProps: Board.BoardProps) {
-        if (prevProps.squares !== this.props.squares) {
-            this.calculateWinnerAndHighlight();
-        }
-    }
-
-    /** 计算胜利者和高亮路线 */
-    calculateWinnerAndHighlight () {
-        const { squares, boardSize, winLength, history = [], currentMove = 0 } = this.props;
-        const { winner, highlightedLine } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), {
-            boardSize,
-            winLength,
-        });
-        this.props.setWinner(winner as string);
-        this.props.setHighlightedLine(highlightedLine);
     }
 
     /** 更新棋盘历史，棋盘 */
