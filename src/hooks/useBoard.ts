@@ -21,21 +21,22 @@ export default function useBoard (props: Board.BoardProps) {
 
     /** 计算赢家 */
     useEffect(() => {
-        const winnerData: Board.winnerDataType = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], {
+        const { winner, highlightedLine } = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill('')), {
             boardSize,
             winLength,
         }) as Board.winnerDataType;
-        setWinner(winnerData && winnerData.winner);
-        setHighlightedLine(winnerData && winnerData.highlightedLine);
+        setWinner(winner);
+        setHighlightedLine(highlightedLine);
     }, [squares, boardSize, winLength]);
 
     /** 点击棋盘时的回调 */
     const handleSquareClick = useCallback(
         (index: number) => {
             // 如果有赢家或者已经下过了,就返回
+            const { winner } = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill('')), { boardSize, winLength });
             if (
-                squares[index] ||
-                calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill(null)) as string [], { boardSize, winLength })
+                squares[index] || winner
+
             ) {
                 return;
             }

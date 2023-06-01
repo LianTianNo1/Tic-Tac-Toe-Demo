@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setHistory, setCurrentMove } from 'store/actions';
 
 // 默认棋盘大小长度
-export const DEFAULT_BOARD_SIZE = 6;
+export const DEFAULT_BOARD_SIZE = 3;
 // 默认连线长度
 const DEFAULT_WIN_LENGTH = 3;
 // 默认第0步
@@ -25,7 +25,7 @@ export default function useGameBoardRule () {
                 Number(event.target.value)
             );
             setBoardSize(size);
-            dispatch(setHistory([Array(size * size).fill(null)]));
+            dispatch(setHistory([Array(size * size).fill('')]));
             dispatch(setCurrentMove(DEFAULT_CURRENT_MOVE));
         },
         []
@@ -46,8 +46,9 @@ export default function useGameBoardRule () {
         boardSize,
         winLength,
         history,
+        setWinLength,
+        setBoardSize,
         handleBoardSizeChange,
         handleWinLengthChange,
-        setWinLength,
     };
 }

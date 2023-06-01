@@ -2,10 +2,13 @@ import React, { useMemo } from 'react';
 import { Board, Input } from 'components';
 import { useGameState } from 'hooks';
 import { calculateRowCol } from 'utils';
+import { O_SYMBOL, X_SYMBOL } from 'hooks/useBoard';
 
 /** Game组件 */
 export default function Game () {
     const {
+        isAI,
+        isAIFirst,
         xIsNext,
         history,
         boardSize,
@@ -14,7 +17,9 @@ export default function Game () {
         currentMove,
         currentSquares,
         jumpTo,
+        toggleAI,
         handlePlay,
+        toggleAIFirst,
         toggleSortOrder,
         handleBoardSizeChange,
         handleWinLengthChange,
@@ -68,8 +73,15 @@ export default function Game () {
     // 返回游戏组件
     return (
         <div className="game">
-            <div className="game-setting">
-                {/* 添加输入框设置棋盘大小和连线长度 */}
+            <button onClick={toggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
+            {isAI && (<>
+                <button className='open-ai-btn' onClick={toggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>
+                <div className='chess-piece-tip'>
+                    当前AI棋子为 {isAIFirst ? X_SYMBOL : O_SYMBOL}
+                </div>
+            </>)}
+
+            {!isAI && <div className="game-setting">
                 <Input
                     type="number"
                     value={boardSize}
@@ -83,7 +95,7 @@ export default function Game () {
                     onChange={handleWinLengthChange}
                     label={`连线长度：当前规则${winLength}子棋`}
                 />
-            </div>
+            </div>}
             <div className="game-wrap">
                 <div className="game-board">
                     <Board

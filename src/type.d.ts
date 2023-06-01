@@ -86,7 +86,7 @@ declare namespace Game {
 
     /** 历史记录 */
     export interface HistoryState {
-        history: Array<Array<string | null>>;
+        history: Array<Array<string>>;
         currentMove: number;
     }
 

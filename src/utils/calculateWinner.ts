@@ -67,5 +67,10 @@ export default function calculateWinner (
         }
     }
     // 没有找到获胜者，返回null
-    return null;
+    return {
+        // 当前玩家获胜
+        winner: '',
+        // 胜利线上的位置
+        highlightedLine: [],
+    };
 }
