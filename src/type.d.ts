@@ -130,6 +130,8 @@ declare namespace Game {
         setWinner: (winner: string) => void;
         /** 设置高亮线段 */
         setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
+        /** 设置当前点击的棋子下标 */
+        setCurrentIdx: (currentIdx: number | undefined) => void;
     }
 
     /** 游戏State */

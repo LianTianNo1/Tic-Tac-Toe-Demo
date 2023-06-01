@@ -9,6 +9,7 @@ import {
     setIsAscendinge,
     setWinner,
     setHighlightedLine,
+    setCurrentIdx,
 } from 'store/actions';
 import { Board, Input } from 'components';
 import { calculateRowCol, calculateWinner } from 'utils';
@@ -22,6 +23,8 @@ export const DEFAULT_BOARD_SIZE = 3;
 export const DEFAULT_WIN_LENGTH = 3;
 /** 默认第0步 */
 export const DEFAULT_CURRENT_MOVE = 0;
+/** 棋盘大小 */
+export const BOARD_SIZE = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
 
 class Game extends Component<Game.GameProps, Game.GameState> {
     constructor (props: Game.GameProps) {
@@ -193,13 +196,9 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
         this.props.setWinner('');
         this.props.setHighlightedLine([]);
-        const _arr = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
-        // _arr[0][2] = 'X';
-        this.props.setHistory(_arr);
+        this.props.setHistory(BOARD_SIZE);
         this.props.setBoardSize(DEFAULT_BOARD_SIZE);
-        // setTimeout(() => {
-        //     this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
-        // }, 0);
+        this.props.setCurrentIdx(undefined);
     };
 
     /** 切换AI对局 */
@@ -350,5 +349,6 @@ export default connect(
         setIsAscendinge,
         setWinner,
         setHighlightedLine,
+        setCurrentIdx,
     }
 )(Game);

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BoardContent } from 'components';
@@ -30,7 +29,6 @@ class Board extends Component<Board.BoardProps> {
             nextSquares[index] = O_SYMBOL;
         }
 
-        console.log('nextSquares', nextSquares);
         onPlay(nextSquares, history, currentMove, isAIFirst);
     };
 
