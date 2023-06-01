@@ -30,6 +30,7 @@ class Board extends Component<Board.BoardProps> {
             nextSquares[index] = O_SYMBOL;
         }
 
+        console.log('nextSquares', nextSquares);
         onPlay(nextSquares, history, currentMove, isAIFirst);
     };
 

@@ -20,6 +20,9 @@ class BoardContent extends Component<Board.BoardContentProps, Board.BoardContent
         const { onSquareClick } = this.props;
 
         if (currentIdx !== prevProps.currentIdx) {
+            // onSquareClick(currentIdx as number);
+        }
+        if (currentIdx !== undefined) {
             onSquareClick(currentIdx as number);
         }
     }

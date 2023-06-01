@@ -82,7 +82,7 @@ declare namespace Board {
     /** 高亮路线 */
     export type HighlightedLineType = number[] | null;
     /** 棋盘当前点击的Index */
-    export type CurrentIdxType = number | null;
+    export type CurrentIdxType = number | undefined;
 }
 
 /** 游戏相关 */

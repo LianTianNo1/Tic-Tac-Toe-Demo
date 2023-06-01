@@ -193,25 +193,24 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
         this.props.setWinner('');
         this.props.setHighlightedLine([]);
+        const _arr = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
+        // _arr[0][2] = 'X';
+        this.props.setHistory(_arr);
+        this.props.setBoardSize(DEFAULT_BOARD_SIZE);
+        // setTimeout(() => {
+        //     this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
+        // }, 0);
     };
 
     /** 切换AI对局 */
     toggleAI = () => {
         const { isAI } = this.state;
-        const { boardSize } = this.props;
         const _isAI = !isAI;
         this.setState({ isAI: _isAI });
         // 当前关闭AI战局，关闭AI先手
         if (!_isAI) {
             this.setState({ isAIFirst: false });
-            this.props.setBoardSize(6);
-            this.props.setHistory([Array(boardSize * boardSize).fill('')]);
-            // this.props.setBoardSize(3);
-        } else {
-            this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
-            this.props.setBoardSize(DEFAULT_BOARD_SIZE);
         }
-        this.forceUpdate();
         this.resetState();
     };
 
