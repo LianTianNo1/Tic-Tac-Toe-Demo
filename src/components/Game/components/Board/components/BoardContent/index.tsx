@@ -15,13 +15,10 @@ class BoardContent extends Component<Board.BoardContentProps, Board.BoardContent
     };
 
     /** 更新棋盘数据 */
-    componentDidUpdate (prevProps: Board.BoardContentProps) {
+    componentDidUpdate () {
         const { currentIdx } = this.props;
         const { onSquareClick } = this.props;
 
-        if (currentIdx !== prevProps.currentIdx) {
-            // onSquareClick(currentIdx as number);
-        }
         if (currentIdx !== undefined) {
             onSquareClick(currentIdx as number);
         }
