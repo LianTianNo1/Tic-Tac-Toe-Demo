@@ -14,7 +14,9 @@ import { Board, Input } from 'components';
 import { calculateRowCol, calculateWinner } from 'utils';
 import { O_SYMBOL, X_SYMBOL } from './components/Board';
 
-/** 默认棋盘大小长度 */
+/** 五子棋长度 */
+export const DEFAULT_FIVE_BOARD_SIZE = 5;
+/** 井字棋长度 */
 export const DEFAULT_BOARD_SIZE = 3;
 /** 默认连线长度 */
 export const DEFAULT_WIN_LENGTH = 3;
@@ -58,8 +60,8 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         const { boardSize, winLength } = this.props;
         /** 当前棋盘数据 */
         const squares = nextSquares.slice();
-        /** 上次棋盘数据 */
-        const preSquares = (nextHistory as string [][])[currentMove - 1] || Array(squares.length).fill('');
+        /** 当前棋盘数据 */
+        const curSquares = (nextHistory as string [][])[currentMove] || Array(squares.length).fill('');
         /** 人类玩家棋子 */
         const HumanPlayer = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
         /** 空位 */
@@ -86,7 +88,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             // 模拟落子
             squares[index] = AIPlayer;
             // 判断是否获胜
-            const { winner } = calculateWinner(squares,  preSquares, {
+            const { winner } = calculateWinner(squares,  curSquares, {
                 boardSize,
                 winLength,
             });
@@ -104,7 +106,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             // 模拟对手的落子
             squares[index] = HumanPlayer;
             // 判断对手是否获胜
-            const { winner } = calculateWinner(squares, preSquares, {
+            const { winner } = calculateWinner(squares, curSquares, {
                 boardSize,
                 winLength,
             });
@@ -188,20 +190,28 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     /** 重置状态 */
     resetState = () => {
         /** 重置棋盘大小|步数|赢家|高亮路线|棋盘大小 */
-        this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
         this.props.setWinner('');
         this.props.setHighlightedLine([]);
-        this.props.setBoardSize(DEFAULT_BOARD_SIZE);
     };
 
     /** 切换AI对局 */
     toggleAI = () => {
         const { isAI } = this.state;
+        const { boardSize } = this.props;
         const _isAI = !isAI;
         this.setState({ isAI: _isAI });
         // 当前关闭AI战局，关闭AI先手
-        if (!_isAI) this.setState({ isAIFirst: false });
+        if (!_isAI) {
+            this.setState({ isAIFirst: false });
+            this.props.setBoardSize(6);
+            this.props.setHistory([Array(boardSize * boardSize).fill('')]);
+            // this.props.setBoardSize(3);
+        } else {
+            this.props.setHistory([Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')]);
+            this.props.setBoardSize(DEFAULT_BOARD_SIZE);
+        }
+        this.forceUpdate();
         this.resetState();
     };
 
