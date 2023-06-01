@@ -84,10 +84,18 @@ declare namespace Game {
         style?: React.CSSProperties;
     }
 
-    /** 历史记录 */
+    /** 游戏状态记录 */
     export interface HistoryState {
+        /** 历史记录 */
         history: Array<Array<string>>;
+        /** 当前移动第几步 */
         currentMove: number;
+        /** 是否AI战局 */
+        isAI: isAIType;
+        /** AI是否先手 */
+        isAIFirst: isAIFirstType;
+        /** AI棋子 */
+        AIPlayer: AIPlayerType;
     }
 
     /** 历史记录 */
@@ -96,6 +104,12 @@ declare namespace Game {
     export type CurrentMoveType = number;
     /** 排序 */
     export type IsAscendingType = boolean;
+    /** 是否AI战局 */
+    export type isAIType= boolean
+    /** AI是否先手 */
+    export type isAIFirstType= boolean
+    /** AI棋子 */
+    export type AIPlayerType= string
 }
 
 /** redux相关 */

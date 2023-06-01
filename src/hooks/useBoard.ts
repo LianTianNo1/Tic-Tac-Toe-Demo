@@ -36,7 +36,6 @@ export default function useBoard (props: Board.BoardProps) {
             const { winner } = calculateWinner(squares, (history[currentMove - 1] || Array(squares.length).fill('')), { boardSize, winLength });
             if (
                 squares[index] || winner
-
             ) {
                 return;
             }
