@@ -46,6 +46,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setCurrentMove(DEFAULT_CURRENT_MOVE);
         this.props.setWinner('');
         this.props.setHighlightedLine([]);
+        this.props.setCurrentIdx(undefined);
     };
 
     /** 连线长度改变 */
@@ -56,6 +57,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             boardSize
         );
         this.props.setWinLength(winLength);
+        this.props.setCurrentIdx(undefined);
     };
 
     /** AI移动 */
