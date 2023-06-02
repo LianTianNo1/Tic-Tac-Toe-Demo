@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import store from 'store';
 import {
     setHistory,
     setCurrentMove,
@@ -13,9 +14,8 @@ import {
     setIsAIFirst,
 } from 'store/actions';
 import { Board, Input } from 'components';
-import { calculateRowCol, calculateWinner } from 'utils';
 import { O_SYMBOL, X_SYMBOL } from './components/Board';
-import store from 'store';
+import { calculateRowCol, calculateWinner } from 'utils';
 import { BOARD_SIZE, DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE, DEFAULT_WIN_LENGTH } from 'store/states';
 
 class Game extends Component<Game.GameProps> {
@@ -47,15 +47,15 @@ class Game extends Component<Game.GameProps> {
     };
 
     /** AI移动 */
-    handleAIMove = (nextSquares: Board.SquaresType) => {
+    handleAIMove = () => {
         const { currentMove, history, isAIFirst } = store.getState();
         const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
 
         const { boardSize, winLength } = this.props;
         /** 当前棋盘数据 */
-        const squares = nextSquares.slice();
+        const squares = history[currentMove].slice(0);
         /** 当前棋盘数据 */
-        const curSquares = (history as string [][])[currentMove] || Array(squares.length).fill('');
+        const curSquares = squares.slice(0);
         /** 人类玩家棋子 */
         const HumanPlayer = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
         /** 空位 */
@@ -68,9 +68,9 @@ class Game extends Component<Game.GameProps> {
 
         // 只针对井字棋后手第一步先判断中心有没有人下，没有的话就不乱下，先下中心
         if (
-            (emptySquares.length === nextSquares.length - 1 ||  emptySquares.length === nextSquares.length) &&
-            nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE &&
-            !nextSquares[4]
+            (emptySquares.length === squares.length - 1 ||  emptySquares.length === squares.length) &&
+            squares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE &&
+            !squares[4]
         ) {
             squares[4] = AIPlayer;
             this.handlePlay(squares);
@@ -81,8 +81,6 @@ class Game extends Component<Game.GameProps> {
         for (const index of emptySquares) {
             // 模拟落子
             squares[index] = AIPlayer;
-            // console.log('pre', curSquares);
-            // console.log('cur', squares);
             // 判断是否获胜
             const { winner } = calculateWinner(squares,  curSquares, {
                 boardSize,
@@ -160,7 +158,7 @@ class Game extends Component<Game.GameProps> {
         // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
         const isAIStep = currentPlayer === AIPlayer;
         if (isAI && isAIStep) {
-            this.handleAIMove(nextSquares);
+            this.handleAIMove();
         }
     };
 
@@ -224,15 +222,14 @@ class Game extends Component<Game.GameProps> {
 
     /** 切换AI对局 */
     toggleAIFirst = () => {
-        const { boardSize, isAIFirst, isAI, setIsAIFirst } = this.props;
+        const { isAIFirst, isAI, setIsAIFirst } = this.props;
         const _isAIFirst = !isAIFirst;
         setIsAIFirst(_isAIFirst);
         this.resetState(0);
 
         /** 如果AI对局并且AI先手 */
         if (isAI && _isAIFirst) {
-            const _squares = Array(boardSize * boardSize).fill('');
-            this.handleAIMove(_squares);
+            this.handleAIMove();
         }
     };
 
