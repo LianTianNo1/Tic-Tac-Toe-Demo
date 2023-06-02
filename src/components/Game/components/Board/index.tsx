@@ -23,11 +23,7 @@ class Board extends Component<Board.BoardProps> {
 
         const nextSquares = squares.slice();
 
-        if (xIsNext) {
-            nextSquares[index] = X_SYMBOL;
-        } else {
-            nextSquares[index] = O_SYMBOL;
-        }
+        nextSquares[index] = xIsNext ? X_SYMBOL : O_SYMBOL;
 
         onPlay(nextSquares, history, currentMove, isAIFirst);
     };

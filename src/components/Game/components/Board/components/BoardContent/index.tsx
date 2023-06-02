@@ -11,7 +11,8 @@ class BoardContent extends Component<Board.BoardContentProps, Board.BoardContent
 
     /** 改变Index */
     handleChangeCurrentIdx = (index: number) => {
-        this.props.setCurrentIdx(index);
+        const { setCurrentIdx } = this.props;
+        setCurrentIdx(index);
     };
 
     /** 更新棋盘数据 */
