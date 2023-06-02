@@ -26,7 +26,7 @@ export const DEFAULT_CURRENT_MOVE = 0;
 /** 棋盘大小 */
 export const BOARD_SIZE = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
 /** 最大深度 */
-// const DEPTH = 4;
+const DEPTH = 3;
 
 class Game extends Component<Game.GameProps, Game.GameState> {
     constructor (props: Game.GameProps) {
@@ -62,105 +62,15 @@ class Game extends Component<Game.GameProps, Game.GameState> {
         this.props.setCurrentIdx(undefined);
     };
 
-    /** 使用博弈树搜索找到最佳落子位置 */
-    /** 井字棋AI算法 */
-    minimax = (
-        squares: Board.SquaresType,
-        currentPlayer: string,
-        opponentPlayer: string,
-        isMaximizing: boolean,
-        depth: number,
-        alpha: number,
-        beta: number,
-        winLength: number,
-        curSquares: Board.SquaresType,
-    ): number | null => {
-        const { boardSize } = this.props;
-
-        const { winner } = calculateWinner(squares, curSquares, { boardSize, winLength });
-
-        if (winner === currentPlayer) {
-            return 1; // AI wins
-        }
-
-        if (winner === opponentPlayer) {
-            return -1; // Human wins
-        }
-
-        if (squares.every((square) => square !== '')) {
-            return 0; // Draw
-        }
-
-        if (isMaximizing) {
-            let maxEval = -Infinity;
-            let bestMove: number | null = null;
-
-            for (let index = 0; index < squares.length; index++) {
-                if (squares[index] === '') {
-                    squares[index] = currentPlayer;
-
-                    const evaluate = this.minimax(squares, currentPlayer, opponentPlayer, false, depth + 1, alpha, beta, winLength, curSquares);
-
-                    squares[index] = '';
-
-                    if (evaluate !== null && evaluate > maxEval) {
-                        maxEval = evaluate;
-                        bestMove = index;
-
-                        alpha = Math.max(alpha, maxEval);
-                        if (alpha >= beta) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (depth === 0) {
-                return bestMove;
-            }
-            return maxEval;
-        }
-        let minEval = Infinity;
-
-        for (let index = 0; index < squares.length; index++) {
-            if (squares[index] === '') {
-                squares[index] = opponentPlayer;
-
-                const evaluate = this.minimax(squares, currentPlayer, opponentPlayer, true, depth + 1, alpha, beta, winLength, curSquares);
-
-                squares[index] = '';
-
-                if (evaluate !== null) {
-                    minEval = Math.min(minEval, evaluate);
-
-                    beta = Math.min(beta, minEval);
-                    if (beta <= alpha) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return minEval;
-    };
-
     /** AI移动 */
-    /** AI移动 */
-    handleAIMove = (
-        nextSquares: Board.SquaresType,
-        nextHistory: Game.HistoryType,
-        currentMove: Game.CurrentMoveType,
-        AIPlayer: string,
-        isAIFirst: Game.isAIFirst = false
-    ) => {
-        const { winLength } = this.props;
-        /** 当前棋盘数据 */
+    handleAIMove = (nextSquares: Board.SquaresType, nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst = false) => {
+        const { boardSize, winLength } = this.props;
         const squares = nextSquares.slice();
         /** 当前棋盘数据 */
         const curSquares = (nextHistory as string[][])[currentMove] || Array(squares.length).fill('');
         /** 人类玩家棋子 */
         const HumanPlayer = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
-        /** 空位 */
+        /** 空余位置 */
         const emptySquares = squares.reduce((acc: number[], square: string, index: number) => {
             if (square === '') {
                 acc.push(index);
@@ -168,23 +78,74 @@ class Game extends Component<Game.GameProps, Game.GameState> {
             return acc;
         }, []);
 
-        // Only for the first move of Tic-Tac-Toe, check if the center is available. If yes, play in the center.
+        // 选择角落位置作为第一步
         if (
-            emptySquares.length === nextSquares.length &&
-        nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE &&
-        !nextSquares[4]
+            emptySquares.length === nextSquares.length - 1 &&
+            nextSquares.length === DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE
         ) {
-            squares[4] = AIPlayer;
+            const cornerIndices = [0, 2, 4, 6, 8];
+            const randomIndex = Math.floor(Math.random() * cornerIndices.length);
+            const cornerMove = cornerIndices[randomIndex];
+            squares[cornerMove] = AIPlayer;
             this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
             return;
         }
 
-        const bestMove = this.minimax(squares, AIPlayer, HumanPlayer, true, 0, -Infinity, Infinity, winLength, curSquares);
 
-        if (bestMove !== null) {
-            squares[bestMove] = AIPlayer;
-            this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+        // 使用博弈树搜索找到最佳落子位置
+        let bestMove = -1;
+        let bestEval = -Infinity;
+        for (let index = 0; index < emptySquares.length; index++) {
+            const move = emptySquares[index];
+            squares[move] = AIPlayer;
+            // const evaluate = this.minimax(squares, curSquares, DEPTH, false, AIPlayer, HumanPlayer, boardSize, winLength);
+            const evaluate = this.minimax(squares, curSquares, DEPTH, true, AIPlayer, HumanPlayer, boardSize, winLength);
+            squares[move] = '';
+            if (evaluate > bestEval) {
+                bestEval = evaluate;
+                bestMove = move;
+            }
         }
+
+        squares[bestMove] = AIPlayer;
+        this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+    };
+
+    /** 使用博弈树搜索找到最佳落子位置 */
+    minimax = (squares: Board.SquaresType, curSquares: string[], depth: number, maximizingPlayer: boolean, AIPlayer: string, HumanPlayer: string, boardSize: number, winLength: number): number => {
+        // 判断是否获胜或达到最大深度
+        const { winner } = calculateWinner(squares, curSquares, { boardSize, winLength });
+        if (winner === AIPlayer) {
+            return maximizingPlayer ? 1 : -1;
+        } else if (winner === HumanPlayer) {
+            return maximizingPlayer ? -1 : 1;
+        } else if (depth === 0) {
+            return 0;
+        }
+
+        // 根据当前玩家进行递归搜索
+        if (maximizingPlayer) {
+            let maxEval = -Infinity;
+            for (let index = 0; index < squares.length; index++) {
+                if (squares[index] === '') {
+                    squares[index] = AIPlayer;
+                    const evaluate = this.minimax(squares, curSquares, depth - 1, false, AIPlayer, HumanPlayer, boardSize, winLength);
+                    squares[index] = '';
+                    maxEval = Math.max(maxEval, evaluate);
+                }
+            }
+            return maxEval;
+        }
+        let minEval = Infinity;
+        for (let index = 0; index < squares.length; index++) {
+            if (squares[index] === '') {
+                squares[index] = HumanPlayer;
+                const evaluate = this.minimax(squares, curSquares, depth - 1, true, AIPlayer, HumanPlayer, boardSize, winLength);
+                squares[index] = '';
+                minEval = Math.min(minEval, evaluate);
+            }
+        }
+        return minEval;
     };
 
 
