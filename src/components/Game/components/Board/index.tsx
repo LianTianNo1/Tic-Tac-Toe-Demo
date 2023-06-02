@@ -15,17 +15,14 @@ class Board extends Component<Board.BoardProps> {
 
     /** 更新棋盘历史，棋盘 */
     handleSquareClick = (index: number) => {
-        const { squares, xIsNext, boardSize, winLength, history = [], currentMove = 0, isAIFirst = false, onPlay = blockFun } = this.props;
+        const { squares, xIsNext, boardSize, winLength, history = [], currentMove = 0, onPlay = blockFun } = this.props;
         const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), { boardSize, winLength });
         if (squares[index] || winner) {
             return;
         }
-
         const nextSquares = squares.slice();
-
         nextSquares[index] = xIsNext ? X_SYMBOL : O_SYMBOL;
-
-        onPlay(nextSquares, history, currentMove, isAIFirst);
+        onPlay(nextSquares);
     };
 
     render () {

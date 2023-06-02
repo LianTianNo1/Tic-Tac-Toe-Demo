@@ -52,7 +52,7 @@ declare namespace Board {
         /** 连线长度 */
         winLength: WinLengthType;
         /** 父类的更新历史的方法 */
-        onPlay: (squares: SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType,  isAIFirst: Game.isAIFirst) => void;
+        onPlay: (squares: SquaresType) => void;
     }
 
     /** 棋盘尺寸 胜利条件 */

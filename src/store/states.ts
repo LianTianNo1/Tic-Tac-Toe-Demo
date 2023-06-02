@@ -1,4 +1,15 @@
-import { BOARD_SIZE, DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE, DEFAULT_WIN_LENGTH } from 'components/Game';
+// import { BOARD_SIZE, DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE, DEFAULT_WIN_LENGTH } from 'components/Game';
+
+/** 五子棋长度 */
+export const DEFAULT_FIVE_BOARD_SIZE = 5;
+/** 井字棋长度 */
+export const DEFAULT_BOARD_SIZE = 3;
+/** 默认连线长度 */
+export const DEFAULT_WIN_LENGTH = 3;
+/** 默认第0步 */
+export const DEFAULT_CURRENT_MOVE = 0;
+/** 棋盘大小 */
+export const BOARD_SIZE = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
 
 // 定义初始 state
 export const initialState: MyRedux.StateType = {

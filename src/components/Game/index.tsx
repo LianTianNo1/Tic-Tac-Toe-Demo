@@ -15,17 +15,8 @@ import {
 import { Board, Input } from 'components';
 import { calculateRowCol, calculateWinner } from 'utils';
 import { O_SYMBOL, X_SYMBOL } from './components/Board';
-
-/** 五子棋长度 */
-export const DEFAULT_FIVE_BOARD_SIZE = 5;
-/** 井字棋长度 */
-export const DEFAULT_BOARD_SIZE = 3;
-/** 默认连线长度 */
-export const DEFAULT_WIN_LENGTH = 3;
-/** 默认第0步 */
-export const DEFAULT_CURRENT_MOVE = 0;
-/** 棋盘大小 */
-export const BOARD_SIZE = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
+import store from 'store';
+import { BOARD_SIZE, DEFAULT_BOARD_SIZE, DEFAULT_CURRENT_MOVE, DEFAULT_WIN_LENGTH } from 'store/states';
 
 class Game extends Component<Game.GameProps> {
     constructor (props: Game.GameProps) {
@@ -56,12 +47,15 @@ class Game extends Component<Game.GameProps> {
     };
 
     /** AI移动 */
-    handleAIMove = (nextSquares: Board.SquaresType,  nextHistory: Game.HistoryType, currentMove: Game.CurrentMoveType, AIPlayer: string, isAIFirst: Game.isAIFirst  = false) => {
+    handleAIMove = (nextSquares: Board.SquaresType) => {
+        const { currentMove, history, isAIFirst } = store.getState();
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+
         const { boardSize, winLength } = this.props;
         /** 当前棋盘数据 */
         const squares = nextSquares.slice();
         /** 当前棋盘数据 */
-        const curSquares = (nextHistory as string [][])[currentMove] || Array(squares.length).fill('');
+        const curSquares = (history as string [][])[currentMove] || Array(squares.length).fill('');
         /** 人类玩家棋子 */
         const HumanPlayer = AIPlayer === X_SYMBOL ? O_SYMBOL : X_SYMBOL;
         /** 空位 */
@@ -79,7 +73,7 @@ class Game extends Component<Game.GameProps> {
             !nextSquares[4]
         ) {
             squares[4] = AIPlayer;
-            this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+            this.handlePlay(squares);
             return;
         }
 
@@ -87,6 +81,8 @@ class Game extends Component<Game.GameProps> {
         for (const index of emptySquares) {
             // 模拟落子
             squares[index] = AIPlayer;
+            // console.log('pre', curSquares);
+            // console.log('cur', squares);
             // 判断是否获胜
             const { winner } = calculateWinner(squares,  curSquares, {
                 boardSize,
@@ -94,7 +90,7 @@ class Game extends Component<Game.GameProps> {
             });
             // 如果AI获胜了，直接返回
             if (winner === AIPlayer) {
-                this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+                this.handlePlay(squares);
                 return;
             }
             // 清空模拟的落子
@@ -113,7 +109,7 @@ class Game extends Component<Game.GameProps> {
             // 如果对手获胜了，直接阻止对手获胜的落子
             if (winner === HumanPlayer) {
                 squares[index] = AIPlayer;
-                this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+                this.handlePlay(squares);
                 return;
             }
             // 清空模拟的落子
@@ -124,17 +120,19 @@ class Game extends Component<Game.GameProps> {
         const randomIndex = Math.floor(Math.random() * emptySquares.length);
         const randomSquare = emptySquares[randomIndex];
         squares[randomSquare] = AIPlayer;
-        this.handlePlay(squares, nextHistory, currentMove, isAIFirst);
+        this.handlePlay(squares);
     };
 
     /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
-    handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType, isAIFirst: Game.isAIFirst  = false) => {
-        const { isAI, boardSize, winLength, setHistory, setCurrentMove, setWinner, setHighlightedLine } = this.props;
+    handlePlay = (nextSquares: Board.SquaresType) => {
+        const { boardSize, winLength, setHistory, setCurrentMove, setWinner, setHighlightedLine } = this.props;
+        const { currentMove, history, isAIFirst, isAI } = store.getState();
 
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
             nextSquares,
         ];
+
         // 设置历史
         setHistory(nextHistory);
         // 设置当前移动步骤
@@ -162,7 +160,7 @@ class Game extends Component<Game.GameProps> {
         // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
         const isAIStep = currentPlayer === AIPlayer;
         if (isAI && isAIStep) {
-            this.handleAIMove(nextSquares, nextHistory, nextHistory.length - 1, AIPlayer, isAIFirst);
+            this.handleAIMove(nextSquares);
         }
     };
 
@@ -231,12 +229,10 @@ class Game extends Component<Game.GameProps> {
         setIsAIFirst(_isAIFirst);
         this.resetState(0);
 
-        // AI 是如果先手默认是X 后手默认是 O
-        const AIPlayer = _isAIFirst ? X_SYMBOL : O_SYMBOL;
         /** 如果AI对局并且AI先手 */
         if (isAI && _isAIFirst) {
             const _squares = Array(boardSize * boardSize).fill('');
-            this.handleAIMove(_squares, [_squares], DEFAULT_CURRENT_MOVE, AIPlayer, _isAIFirst);
+            this.handleAIMove(_squares);
         }
     };
 
