@@ -9,6 +9,8 @@ export const SET_IS_ASCENDING = 'SET_IS_ASCENDING';
 export const SET_WINNER = 'SET_WINNER';
 export const SET_HIGHLIGHTED_LINE = 'SET_HIGHLIGHTED_LINE';
 export const SET_CURRENT_IDX = 'SET_CURRENT_IDX';
+export const SET_IS_AI = 'SET_IS_AI';
+export const SET_IS_FIRST = 'SET_IS_FIRST';
 
 
 /** 设置历史 */
@@ -74,3 +76,21 @@ export function setCurrentIdx (currentIdx: Board.CurrentIdxType) {
         payload: currentIdx,
     };
 }
+
+/** 是否开启AI对局 */
+export function setIsAI (isAI: Game.isAI) {
+    return {
+        type: SET_IS_AI,
+        payload: isAI,
+    };
+}
+
+
+/** 设置AI是否先手, 默认后 */
+export function setIsAIFirst (isAIFirst: Game.isAIFirst) {
+    return {
+        type: SET_IS_FIRST,
+        payload: isAIFirst,
+    };
+}
+

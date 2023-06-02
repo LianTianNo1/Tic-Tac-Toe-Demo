@@ -9,6 +9,8 @@ import {
     setWinner,
     setHighlightedLine,
     setCurrentIdx,
+    setIsAI,
+    setIsAIFirst,
 } from 'store/actions';
 import { Board, Input } from 'components';
 import { calculateRowCol, calculateWinner } from 'utils';
@@ -25,15 +27,9 @@ export const DEFAULT_CURRENT_MOVE = 0;
 /** 棋盘大小 */
 export const BOARD_SIZE = [Array(DEFAULT_BOARD_SIZE * DEFAULT_BOARD_SIZE).fill('')];
 
-class Game extends Component<Game.GameProps, Game.GameState> {
+class Game extends Component<Game.GameProps> {
     constructor (props: Game.GameProps) {
         super(props);
-        this.state = {
-            /** 是否开启AI对局 */
-            isAI: false,
-            /** AI是否先手, 默认后手 */
-            isAIFirst: false,
-        };
     }
 
     /** 棋盘大小改变 */
@@ -133,8 +129,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     /** 更新历史和当前步骤 nextSquares 是当前棋盘数据 */
     handlePlay = (nextSquares: Board.SquaresType, history: Game.HistoryType, currentMove: Game.CurrentMoveType, isAIFirst: Game.isAIFirst  = false) => {
-        const { isAI } = this.state;
-        const { boardSize, winLength, setHistory, setCurrentMove, setWinner, setHighlightedLine } = this.props;
+        const { isAI, boardSize, winLength, setHistory, setCurrentMove, setWinner, setHighlightedLine } = this.props;
 
         const nextHistory = [
             ...history.slice(0, currentMove + 1),
@@ -219,22 +214,21 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 
     /** 切换AI对局 */
     toggleAI = () => {
-        const { isAI } = this.state;
+        const { isAI, setIsAI, setIsAIFirst } = this.props;
         const _isAI = !isAI;
-        this.setState({ isAI: _isAI });
+        setIsAI(_isAI);
         // 当前关闭AI战局，关闭AI先手
         if (!_isAI) {
-            this.setState({ isAIFirst: false });
+            setIsAIFirst(false);
         }
         this.resetState(0);
     };
 
     /** 切换AI对局 */
     toggleAIFirst = () => {
-        const { isAIFirst, isAI } = this.state;
-        const { boardSize } = this.props;
+        const { boardSize, isAIFirst, isAI, setIsAIFirst } = this.props;
         const _isAIFirst = !isAIFirst;
-        this.setState({ isAIFirst: _isAIFirst });
+        setIsAIFirst(_isAIFirst);
         this.resetState(0);
 
         // AI 是如果先手默认是X 后手默认是 O
@@ -253,8 +247,7 @@ class Game extends Component<Game.GameProps, Game.GameState> {
     }
 
     render () {
-        const { boardSize, winLength, isAscending, history, currentMove, currentSquares } = this.props;
-        const { isAI, isAIFirst } = this.state;
+        const { boardSize, winLength, isAscending, history, currentMove, currentSquares, isAI, isAIFirst } = this.props;
 
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
@@ -347,15 +340,27 @@ class Game extends Component<Game.GameProps, Game.GameState> {
 }
 
 export default connect(
-    (state: MyRedux.StateType) => ({
-        history: state.history,
-        currentMove: state.currentMove,
-        currentSquares: state.history[state.currentMove],
-        boardSize: state.boardSize,
-        winLength: state.winLength,
-        isAscending: state.isAscending,
-        winner: state.winner,
-        highlightedLine: state.highlightedLine,
+    ({
+        isAI,
+        winner,
+        history,
+        isAIFirst,
+        winLength,
+        boardSize,
+        isAscending,
+        currentMove,
+        highlightedLine,
+    }: MyRedux.StateType) => ({
+        isAI,
+        winner,
+        history,
+        isAIFirst,
+        winLength,
+        boardSize,
+        isAscending,
+        currentMove,
+        highlightedLine,
+        currentSquares: history[currentMove],
     }),
     {
         setHistory,
@@ -366,5 +371,7 @@ export default connect(
         setWinner,
         setHighlightedLine,
         setCurrentIdx,
+        setIsAI,
+        setIsAIFirst,
     }
 )(Game);

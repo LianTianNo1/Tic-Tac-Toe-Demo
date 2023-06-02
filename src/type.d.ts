@@ -111,7 +111,7 @@ declare namespace Game {
     }
 
     /** 游戏Props */
-    export interface GameProps extends Game.HistoryState, Board.CalculateWinnerArgs{
+    export interface GameProps extends Game.HistoryState, Board.CalculateWinnerArgs, Game.GameState{
         /** 当前的棋盘数据 */
         currentSquares: Board.SquaresType;
         /** 排序 */
@@ -132,6 +132,10 @@ declare namespace Game {
         setHighlightedLine: (highlightedLine: Board.HighlightedLineType) => void;
         /** 设置当前点击的棋子下标 */
         setCurrentIdx: (currentIdx: number | undefined) => void;
+        /** 设置是否AI战局 */
+        setIsAI: (isAI: Game.isAI) => void;
+        /** 设置是否AI先手 */
+        setIsAIFirst: (isAIFirst: Game.isAIFirst) => void;
     }
 
     /** 游戏State */
@@ -163,7 +167,7 @@ declare namespace MyRedux {
     }
 
     /** 初始化状态 */
-    export interface StateType extends Game.HistoryState, Board.CalculateWinnerArgs, Board.winnerDataType, Board.BoardContentState{
+    export interface StateType extends Game.HistoryState, Game.GameState, Board.CalculateWinnerArgs, Board.winnerDataType, Board.BoardContentState{
         /** 排序 */
         isAscending: boolean;
     }

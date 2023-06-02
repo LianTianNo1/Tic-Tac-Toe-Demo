@@ -5,7 +5,9 @@ import {
     SET_CURRENT_MOVE,
     SET_HIGHLIGHTED_LINE,
     SET_HISTORY,
+    SET_IS_AI,
     SET_IS_ASCENDING,
+    SET_IS_FIRST,
     SET_WINNER,
     SET_WIN_LENGTH
 } from './actions';
@@ -52,6 +54,16 @@ export default function reducer (state: MyRedux.StateType = initialState, action
             return {
                 ...state,
                 currentIdx: action.payload,
+            };
+        case SET_IS_AI:
+            return {
+                ...state,
+                isAI: action.payload,
+            };
+        case SET_IS_FIRST:
+            return {
+                ...state,
+                isAIFirst: action.payload,
             };
         default:
             return state;
