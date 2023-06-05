@@ -1,18 +1,17 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import store from 'store';
 import {
-    setHistory,
-    setCurrentMove,
-    setWinLength,
-    setBoardSize,
-    setIsAscendinge,
-    setWinner,
-    setHighlightedLine,
-    setCurrentIdx,
     setIsAI,
+    setWinner,
+    setHistory,
+    setBoardSize,
+    setWinLength,
     setIsAIFirst,
+    setCurrentIdx,
+    setCurrentMove,
+    setIsAscendinge,
+    setHighlightedLine,
 } from 'store/actions';
 import { Board, Input } from 'components';
 import { O_SYMBOL, X_SYMBOL } from './components/Board';
@@ -138,7 +137,7 @@ class Game extends Component<Game.GameProps> {
         setCurrentMove(nextHistory.length - 1);
 
         /** 计算胜利者 */
-        const preSquares = (history as string [][])[currentMove] || Array(nextSquares.length).fill('');
+        const preSquares = history[currentMove] || Array(nextSquares.length).fill('');
         const { winner, highlightedLine } = calculateWinner(nextSquares, preSquares, { boardSize, winLength });
         if (winner) {
             let _winner = '';
@@ -172,8 +171,8 @@ class Game extends Component<Game.GameProps> {
             setCurrentIdx(undefined);
         }
         /** 计算胜利者 */
-        const preSquares = (history)[nextMove - 1] || Array(boardSize * boardSize).fill('');
-        const squares = (history)[nextMove];
+        const preSquares = history[nextMove - 1] || Array(boardSize * boardSize).fill('');
+        const squares = history[nextMove];
         const { winner, highlightedLine } = calculateWinner(squares, preSquares, { boardSize, winLength });
         setWinner(winner);
         setHighlightedLine(highlightedLine);
@@ -181,7 +180,7 @@ class Game extends Component<Game.GameProps> {
         setCurrentMove(nextMove);
 
         // 判断下一个玩家是X还是O
-        const currentPlayer = (nextMove) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+        const currentPlayer = nextMove % 2 === 0 ? X_SYMBOL : O_SYMBOL;
         // AI 是如果先手默认是X 后手默认是 O
         const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
         // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
@@ -200,8 +199,8 @@ class Game extends Component<Game.GameProps> {
     /** 重置状态 */
     handleResetState = (type: number, payload?: any) => {
         const { setCurrentIdx, setBoardSize, setHistory, setWinner, setHighlightedLine, setCurrentMove, boardSize } = this.props;
-        /** 重置棋盘大小|步数|赢家|高亮路线|棋盘大小 */
 
+        /** 重置棋盘大小|步数|赢家|高亮路线|棋盘大小 */
         switch (type) {
             case 1: {
                 setHistory([Array(payload * payload).fill('')]);

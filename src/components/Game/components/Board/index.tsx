@@ -16,7 +16,7 @@ class Board extends Component<Board.BoardProps> {
     /** 更新棋盘历史，棋盘 */
     handleSquareClick = (index: number) => {
         const { squares, xIsNext, boardSize, winLength, history = [], currentMove = 0, onPlay = blockFun } = this.props;
-        const { winner } = calculateWinner(squares, (history as string [][])[currentMove - 1] || Array(squares.length).fill(''), { boardSize, winLength });
+        const { winner } = calculateWinner(squares, history[currentMove - 1] || Array(squares.length).fill(''), { boardSize, winLength });
         if (squares[index] || winner) {
             return;
         }
@@ -43,7 +43,7 @@ class Board extends Component<Board.BoardProps> {
                 <BoardContent
                     boardSize={boardSize}
                     squares={squares}
-                    highlightedLine={highlightedLine as number []}
+                    highlightedLine={highlightedLine}
                     onSquareClick={this.handleSquareClick}
                 />
             </>
