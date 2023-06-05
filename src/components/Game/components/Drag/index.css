@@ -1,0 +1,31 @@
+  .container {
+    width: 200px;
+    height: 300px;
+    border: 1px solid black;
+    overflow-y: auto;
+  }
+
+  .item {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: white;
+    transition: transform 0.3s;
+  }
+
+  .item.dragged-item {
+    transform: translateY(40px);
+  }
+
+  .item.highlight-move {
+    background-color: red;
+    transition: background-color 0.3s;
+  }
+
+  .item.highlight.dragged-item {
+    background-color: transparent;
+  }
+
+  .scroll-buttons {
+    margin-bottom: 10px;
+  }
