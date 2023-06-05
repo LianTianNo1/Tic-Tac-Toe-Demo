@@ -352,15 +352,6 @@ class Game extends Component<Game.GameProps> {
                             onPlay={this.handlePlay}
                         />
                     </div>
-                    {/* {
-                        !isAI && <div className="game-info">
-                            <button onClick={this.handleToggleSortOrder}>
-                                {isAscending ? '正序' : '倒序'}
-                            </button>
-                            <ol className="record-list">{sortedMoves}</ol>
-                        </div>
-                    } */}
-
                     <div className="game-info">
                         <button onClick={this.handleToggleSortOrder}>
                             {isAscending ? '正序' : '倒序'}
