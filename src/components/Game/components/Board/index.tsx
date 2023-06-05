@@ -51,7 +51,7 @@ class Board extends Component<Board.BoardProps> {
     }
 }
 
-export default connect((state: MyRedux.StateType) => ({
-    winner: state.winner,
-    highlightedLine: state.highlightedLine,
+export default connect(({ winner, highlightedLine }: MyRedux.StateType) => ({
+    winner,
+    highlightedLine,
 }))(Board);

@@ -111,7 +111,7 @@ declare namespace Game {
     }
 
     /** 游戏Props */
-    export interface GameProps extends Game.HistoryState, Board.CalculateWinnerArgs, Game.GameState{
+    export interface GameProps extends Game.HistoryState, Board.BoardContentState, Board.CalculateWinnerArgs, Game.GameState{
         /** 当前的棋盘数据 */
         currentSquares: Board.SquaresType;
         /** 排序 */

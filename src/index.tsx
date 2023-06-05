@@ -17,7 +17,8 @@ class MainApp extends React.Component {
          * FCP(First Contentful Paint)首次内容绘制，标记浏览器渲染来自 DOM 第一位内容的时间点，内容可能是文本、图像等元素。
          * TTFB (Time to First Byte) 首字节到达的时间点。
          */
-        reportWebVitals(console.warn);
+        // reportWebVitals(console.warn);
+        reportWebVitals();
     }
 
     render () {

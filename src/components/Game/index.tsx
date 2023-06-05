@@ -29,7 +29,7 @@ class Game extends Component<Game.GameProps> {
 
         const size = Math.max(DEFAULT_WIN_LENGTH, Number(event.target.value));
         setBoardSize(size);
-        this.resetState(1, size);
+        this.handleResetState(1, size);
         /** 重置棋盘大小和步数 */
     };
 
@@ -43,7 +43,7 @@ class Game extends Component<Game.GameProps> {
         );
         setWinLength(winLength);
         /** 重置棋盘大小和步数 */
-        this.resetState(2);
+        this.handleResetState(2);
     };
 
     /** AI移动 */
@@ -163,11 +163,14 @@ class Game extends Component<Game.GameProps> {
     };
 
     /** 跳转步骤 */
-    jumpTo = (nextMove: number) => {
-        const { history, winLength, boardSize, setWinner, setHighlightedLine, setCurrentMove } = this.props;
+    handleJumpTo = (nextMove: number) => {
+        const { history, winLength, boardSize, currentIdx, setWinner, setHighlightedLine, setCurrentMove, setCurrentIdx } = this.props;
+        if (currentIdx !== undefined) {
+            setCurrentIdx(undefined);
+        }
         /** 计算胜利者 */
-        const preSquares = (history as string [][])[nextMove - 1] || Array(boardSize * boardSize).fill('');
-        const squares = (history as string [][])[nextMove];
+        const preSquares = (history)[nextMove - 1] || Array(boardSize * boardSize).fill('');
+        const squares = (history)[nextMove];
         const { winner, highlightedLine } = calculateWinner(squares, preSquares, { boardSize, winLength });
         setWinner(winner);
         setHighlightedLine(highlightedLine);
@@ -176,13 +179,13 @@ class Game extends Component<Game.GameProps> {
     };
 
     /** 切换排序 */
-    toggleSortOrder = () => {
+    handleToggleSortOrder = () => {
         const { isAscending } = this.props;
         setIsAscendinge(!isAscending);
     };
 
     /** 重置状态 */
-    resetState = (type: number, payload?: any) => {
+    handleResetState = (type: number, payload?: any) => {
         const { setCurrentIdx, setBoardSize, setHistory, setWinner, setHighlightedLine, setCurrentMove, boardSize } = this.props;
         /** 重置棋盘大小|步数|赢家|高亮路线|棋盘大小 */
 
@@ -209,7 +212,7 @@ class Game extends Component<Game.GameProps> {
     };
 
     /** 切换AI对局 */
-    toggleAI = () => {
+    handleToggleAI = () => {
         const { isAI, setIsAI, setIsAIFirst } = this.props;
         const _isAI = !isAI;
         setIsAI(_isAI);
@@ -217,15 +220,15 @@ class Game extends Component<Game.GameProps> {
         if (!_isAI) {
             setIsAIFirst(false);
         }
-        this.resetState(0);
+        this.handleResetState(0);
     };
 
     /** 切换AI对局 */
-    toggleAIFirst = () => {
+    handlehandleToggleAIFirst = () => {
         const { isAIFirst, isAI, setIsAIFirst } = this.props;
         const _isAIFirst = !isAIFirst;
         setIsAIFirst(_isAIFirst);
-        this.resetState(0);
+        this.handleResetState(0);
 
         /** 如果AI对局并且AI先手 */
         if (isAI && _isAIFirst) {
@@ -266,7 +269,7 @@ class Game extends Component<Game.GameProps> {
                     {move === currentMove ? (
                         description
                     ) : (
-                        <button onClick={() => this.jumpTo(move)}>
+                        <button onClick={() => this.handleJumpTo(move)}>
                             {description}
                         </button>
                     )}
@@ -281,9 +284,9 @@ class Game extends Component<Game.GameProps> {
 
         return (
             <div className="game">
-                <button onClick={this.toggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
+                <button onClick={this.handleToggleAI}>{`${isAI ? '关闭' : '开启'}AI对局`}</button>
                 {isAI && (<>
-                    <button className='open-ai-btn' onClick={this.toggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>
+                    <button className='open-ai-btn' onClick={this.handlehandleToggleAIFirst}>{`${isAIFirst ? '关闭' : '开启'}AI先手`}</button>
                     <div className='chess-piece-tip'>
                     当前AI棋子为 {isAIFirst ? X_SYMBOL : O_SYMBOL}
                     </div>
@@ -319,7 +322,7 @@ class Game extends Component<Game.GameProps> {
                     </div>
                     {
                         !isAI && <div className="game-info">
-                            <button onClick={this.toggleSortOrder}>
+                            <button onClick={this.handleToggleSortOrder}>
                                 {isAscending ? '正序' : '倒序'}
                             </button>
                             <ol className="record-list">{sortedMoves}</ol>
@@ -340,6 +343,7 @@ export default connect(
         isAIFirst,
         winLength,
         boardSize,
+        currentIdx,
         isAscending,
         currentMove,
         highlightedLine,
@@ -350,6 +354,7 @@ export default connect(
         isAIFirst,
         winLength,
         boardSize,
+        currentIdx,
         isAscending,
         currentMove,
         highlightedLine,

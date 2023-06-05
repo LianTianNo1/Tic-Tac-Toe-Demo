@@ -4,7 +4,7 @@ import { ChessPiece } from 'components';
 import { setCurrentIdx } from 'store/actions';
 
 /** 渲染棋盘格子 */
-class BoardContent extends Component<Board.BoardContentProps, Board.BoardContentState> {
+class BoardContent extends Component<Board.BoardContentProps> {
     constructor (props: Board.BoardContentProps) {
         super(props);
     }
@@ -15,22 +15,25 @@ class BoardContent extends Component<Board.BoardContentProps, Board.BoardContent
         setCurrentIdx(index);
     };
 
+    /** 判断是否能点击 */
+    handleSquareClickIfNeeded () {
+        const { currentIdx, onSquareClick } = this.props;
+        if (currentIdx !== undefined) {
+            onSquareClick(currentIdx);
+        }
+    }
+
     /** 更新棋盘数据 */
     componentDidUpdate () {
-        const { currentIdx } = this.props;
-        const { onSquareClick } = this.props;
-
-        if (currentIdx !== undefined) {
-            onSquareClick(currentIdx as number);
-        }
+        this.handleSquareClickIfNeeded();
     }
 
     renderChessPiece () {
         const { boardSize, squares, highlightedLine } = this.props;
 
-        return Array.from({ length: boardSize }).map((__, index) => (
+        return Array.from({ length: boardSize }).map((_item, index) => (
             <div key={index} className="board-row">
-                {Array.from({ length: boardSize }).map((__, jIndex) => {
+                {Array.from({ length: boardSize }).map((_jItem, jIndex) => {
                     const squareIndex = (index * boardSize) + jIndex;
                     return (
                         <ChessPiece

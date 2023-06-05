@@ -3,9 +3,9 @@
 /** 计算赢家的函数 */
 export default function calculateWinner (
     // 棋盘格子的数组
-    squares: string[],
+    squares: Board.SquaresType,
     // 上一步的棋盘格子的数组
-    preSquares: string[],
+    preSquares: Board.SquaresType,
     // 参数对象包含棋盘尺寸和胜利条件
     { boardSize, winLength }: Board.CalculateWinnerArgs
 ) {
