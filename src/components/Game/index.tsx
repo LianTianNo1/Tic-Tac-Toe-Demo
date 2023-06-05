@@ -164,7 +164,7 @@ class Game extends Component<Game.GameProps> {
 
     /** 跳转步骤 */
     handleJumpTo = (nextMove: number) => {
-        const { history, winLength, boardSize, currentIdx, setWinner, setHighlightedLine, setCurrentMove, setCurrentIdx } = this.props;
+        const { history, winLength, boardSize, currentIdx, isAIFirst, isAI, setWinner, setHighlightedLine, setCurrentMove, setCurrentIdx } = this.props;
         if (currentIdx !== undefined) {
             setCurrentIdx(undefined);
         }
@@ -176,6 +176,16 @@ class Game extends Component<Game.GameProps> {
         setHighlightedLine(highlightedLine);
         // 设置当前移动的步数
         setCurrentMove(nextMove);
+
+        // 判断下一个玩家是X还是O
+        const currentPlayer = (nextMove) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+        // AI 是如果先手默认是X 后手默认是 O
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
+        const isAIStep = currentPlayer === AIPlayer;
+        if (isAI && isAIStep) {
+            this.handleAIMove();
+        }
     };
 
     /** 切换排序 */
@@ -248,34 +258,62 @@ class Game extends Component<Game.GameProps> {
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
 
+        // 判断下一个玩家是X还是O
+        const currentPlayer = (currentMove) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+        // AI 是如果先手默认是X 后手默认是 O
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+        // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
+        const isAIStep = currentPlayer === AIPlayer;
+        if (isAI && isAIStep) {
+            this.handleAIMove();
+        }
+
+        // 棋盘大小
+        const boardArea = boardSize * boardSize;
+
         /** 渲染历史记录列表 */
-        const moves = history.map((record, move) => {
+        const _history = history.length > boardArea ? history.slice(0, boardArea + 1) : history.slice(0);
+        const moves = _history.map((record, move) => {
             let description;
             if (move === currentMove) {
-                description = `您正在移动第${move}步`;
+                description = `${move !== 0 && isAI && AIPlayer !== currentPlayer ? 'AI' : '您'}正在移动第${move}步`;
             } else if (move > 0) {
-                const rowCol = calculateRowCol(
-                    history[move - 1],
-                    history[move],
-                    boardSize
-                );
+                const rowCol = calculateRowCol(history[move - 1], history[move], boardSize);
                 description = `跳转到第 ${move} 步, 坐标 (${rowCol})`;
             } else {
                 description = '进入游戏开始';
             }
 
-            return (
-                <li key={move}>
-                    {move === currentMove ? (
-                        description
-                    ) : (
+            let content;
+            if (move === currentMove) {
+                content = description;
+            } else if (isAI) {
+                if (move !== 0 && move % 2 === (isAIFirst ? 1 : 0)) {
+                    content = `AI ${description.slice(3)}`;
+                } else if (move !== 0 && move === currentMove - 1) {
+                    content = `您目前在 ${description.slice(3)}`;
+                } else {
+                    content = (
                         <button onClick={() => this.handleJumpTo(move)}>
                             {description}
                         </button>
-                    )}
+                    );
+                }
+            } else {
+                content = (
+                    <button onClick={() => this.handleJumpTo(move)}>
+                        {description}
+                    </button>
+                );
+            }
+
+            return (
+                <li key={move}>
+                    {content}
                 </li>
             );
         });
+
 
         /** 根据isAscending排序moves,a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数 */
         const sortedMoves = isAscending
@@ -320,14 +358,21 @@ class Game extends Component<Game.GameProps> {
                             onPlay={this.handlePlay}
                         />
                     </div>
-                    {
+                    {/* {
                         !isAI && <div className="game-info">
                             <button onClick={this.handleToggleSortOrder}>
                                 {isAscending ? '正序' : '倒序'}
                             </button>
                             <ol className="record-list">{sortedMoves}</ol>
                         </div>
-                    }
+                    } */}
+
+                    <div className="game-info">
+                        <button onClick={this.handleToggleSortOrder}>
+                            {isAscending ? '正序' : '倒序'}
+                        </button>
+                        <ol className="record-list">{sortedMoves}</ol>
+                    </div>
 
                 </div>
             </div>
