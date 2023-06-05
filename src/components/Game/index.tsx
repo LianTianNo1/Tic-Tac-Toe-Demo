@@ -281,15 +281,15 @@ class Game extends Component<Game.GameProps> {
             let content;
             if (move === currentMove) {
                 content = description;
-            } else if (isAI) {
-                if (move !== 0 && move % 2 === (isAIFirst ? 1 : 0)) {
+            } else if (move !== 0 && isAI) {
+                if (move % 2 === (isAIFirst ? 1 : 0)) {
                     content = `AI ${description.slice(3)}`;
-                } else if (move !== 0 && move === currentMove - 1) {
+                } else if (move === currentMove - 1) {
                     content = `您目前在 ${description.slice(3)}`;
                 } else {
                     content = (
                         <button onClick={() => this.handleJumpTo(move)}>
-                            {description}
+                            {`悔棋 ${description.slice(2)}`}
                         </button>
                     );
                 }
