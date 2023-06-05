@@ -258,13 +258,7 @@ class Game extends Component<Game.GameProps> {
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
 
-        // 判断下一个玩家是X还是O
-        const currentPlayer = (currentMove) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
-        // AI 是如果先手默认是X 后手默认是 O
-        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
-        // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
-        const isAIStep = currentPlayer === AIPlayer;
-        if (isAI && isAIStep) {
+        if (isAI && xIsNext && isAIFirst) {
             this.handleAIMove();
         }
 
@@ -276,7 +270,7 @@ class Game extends Component<Game.GameProps> {
         const moves = _history.map((record, move) => {
             let description;
             if (move === currentMove) {
-                description = `${move !== 0 && isAI && AIPlayer !== currentPlayer ? 'AI' : '您'}正在移动第${move}步`;
+                description = `${move !== 0 && isAI && !xIsNext === isAIFirst ? 'AI' : '您'}正在移动第${move}步`;
             } else if (move > 0) {
                 const rowCol = calculateRowCol(history[move - 1], history[move], boardSize);
                 description = `跳转到第 ${move} 步, 坐标 (${rowCol})`;
