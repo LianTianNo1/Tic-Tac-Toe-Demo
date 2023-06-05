@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import store from 'store';
@@ -48,10 +49,10 @@ class Game extends Component<Game.GameProps> {
 
     /** AI移动 */
     handleAIMove = () => {
-        const { currentMove, history, isAIFirst } = store.getState();
-        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
-
+        const { isAIFirst, currentMove, history } = store.getState();
         const { boardSize, winLength } = this.props;
+        /** AI 玩家棋子 */
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
         /** 当前棋盘数据 */
         const squares = history[currentMove].slice(0);
         /** 当前棋盘数据 */
@@ -151,15 +152,17 @@ class Game extends Component<Game.GameProps> {
             return;
         }
 
-        // 判断下一个玩家是X还是O
-        const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
-        // AI 是如果先手默认是X 后手默认是 O
-        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
-        // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
-        const isAIStep = currentPlayer === AIPlayer;
-        if (isAI && isAIStep) {
-            this.handleAIMove();
-        }
+        setTimeout(() => {
+            // 判断下一个玩家是X还是O
+            const currentPlayer = (currentMove + 1) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+            // AI 是如果先手默认是X 后手默认是 O
+            const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
+            // 如果开启了AI对局且下一个对局是AI回合，则触发AI落子
+            const isAIStep = currentPlayer === AIPlayer;
+            if (isAI && isAIStep) {
+                this.handleAIMove();
+            }
+        }, 200);
     };
 
     /** 跳转步骤 */
@@ -258,9 +261,10 @@ class Game extends Component<Game.GameProps> {
         /** 下一步回合是 X 吗 */
         const xIsNext: boolean = this.getXIsNext();
 
-        if (isAI && xIsNext && isAIFirst) {
-            this.handleAIMove();
-        }
+        // 判断下一个玩家是X还是O
+        const currentPlayer = (currentMove) % 2 === 0 ? X_SYMBOL : O_SYMBOL;
+        // AI 是如果先手默认是X 后手默认是 O
+        const AIPlayer = isAIFirst ? X_SYMBOL : O_SYMBOL;
 
         // 棋盘大小
         const boardArea = boardSize * boardSize;
@@ -351,6 +355,9 @@ class Game extends Component<Game.GameProps> {
                             onPlay={this.handlePlay}
                         />
                     </div>
+                    {(isAI && currentPlayer === AIPlayer) && <div className="ai-mask">
+                        AI思考中...
+                    </div>}
                     <div className="game-info">
                         <button onClick={this.handleToggleSortOrder}>
                             {isAscending ? '正序' : '倒序'}
