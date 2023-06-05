@@ -190,7 +190,7 @@ class Game extends Component<Game.GameProps> {
 
     /** 切换排序 */
     handleToggleSortOrder = () => {
-        const { isAscending } = this.props;
+        const { isAscending, setIsAscendinge } = this.props;
         setIsAscendinge(!isAscending);
     };
 
@@ -307,7 +307,6 @@ class Game extends Component<Game.GameProps> {
                 </li>
             );
         });
-
 
         /** 根据isAscending排序moves,a.key和b.key代表了用于比较排序的键,在这里中就是每个move步数 */
         const sortedMoves = isAscending
